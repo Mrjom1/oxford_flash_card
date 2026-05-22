@@ -1,5 +1,5 @@
 {
-    "version": "v3.51",
+    "version": "v3.52",
     "subtitle": "International Polyglot Vocabulary Edition by Shin@m0n Jom",
     "features": [
         {
@@ -17,6 +17,10 @@
         {
             "icon": "🧠",
             "text": "Dynamic Spaced Repetition (SRS) อัลกอริทึมทบทวนอัจฉริยะ คัดกรองคำศัพท์ที่ลืมบ่อยขึ้นมาติวซ้ำ"
+        },
+        {
+            "icon": "✨",
+            "text": "Stroke Order (ลำดับเส้น) สำหรับภาษาจีนและ Kanji ญี่ปุ่น โดยใช้ Hanzi Writer"
         },
         {
             "icon": "⚡",

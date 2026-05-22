@@ -10,12 +10,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="VocabEcosystem">
     <link rel="manifest" href="manifest.json">
-    <title>VocabEcosystem PWA v3.51</title>
+    <title>VocabEcosystem PWA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Kodchasan:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- ✅ v3.52: โหลด config.js ก่อน script ทุกตัว — APP_VERSION / APP_CACHE / STROKE_CACHE / STROKE_LIMIT -->
+    <script src="./config.js"></script>
     <style>
-        /* 🎨 THEME ENGINE VARIABLES v3.51 */
+        /* 🎨 THEME ENGINE VARIABLES v3.52 */
         :root {
             --bg: #0F172A;
             --bg2: #1E293B;
@@ -35,7 +37,7 @@
             --rs: 12px
         }
 
-        /* ☕ LIGHT THEME: โทนอุ่นชานมพาสเทล มินิมอล อ่านง่าย ไม่ขาวแสบตา */
+        /* ☕ LIGHT THEME: โทนอุ่นชานมพาสเทล มินิมอล อ่านง่าย */
         body.light-theme {
             --bg: #F5F2EB;
             --bg2: #EFEBE4;
@@ -76,7 +78,6 @@
             transition: background 0.25s, color 0.25s;
         }
 
-        /* HEADER CONFIGURATION: เคลียร์พิกัด คืนพื้นที่ให้จอมือถือ */
         .hdr {
             display: flex;
             align-items: center;
@@ -173,7 +174,6 @@
             border-radius: 20px;
             background: var(--bg2);
             border: var(--btn-border);
-            /* แก้เป็นตัวนี้ให้เคลียร์ */
             font-size: 13px;
             font-weight: 700;
             color: var(--text3);
@@ -307,7 +307,6 @@
             display: none;
         }
 
-        /* ผูกสีการ์ดเข้ากับระบบ Dynamic Variables */
         .card-front {
             background: var(--card-front-grad);
             border: var(--btn-border);
@@ -680,7 +679,6 @@
             background: var(--accent);
             color: #0F172A;
             border: none;
-            /* ปรับเป็น none เพื่อให้สีปุ่มสว่างเรียบเนียนสไตล์มินิมอล */
             font-size: 16px;
             font-weight: 800;
             cursor: pointer;
@@ -955,7 +953,6 @@
             margin-top: 4px
         }
 
-        /* ปรับแต่งสลักคอมโพเนนต์ปุ่มภายในแท็บบอร์ดตั้งค่า */
         .lang-selector {
             background: var(--bg3);
             color: var(--text);
@@ -1103,7 +1100,7 @@
 
 <body>
     <div class="hdr">
-        <div><span class="logo">Vocab<span>Ecosystem</span></span><span class="ver">v3.51</span></div>
+        <div><span class="logo">Vocab<span>Ecosystem</span></span><span class="ver" id="ver-badge">...</span></div>
         <div class="streak-pill">🔥 <span id="streak-num">0</span> วัน</div>
     </div>
 
@@ -1123,6 +1120,7 @@
             <button class="install-btn" id="install-btn">ติดตั้ง</button>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════ TAB: FLASHCARD -->
         <div id="tab-flash">
             <div class="stats-row">
                 <div class="stat">
@@ -1154,6 +1152,8 @@
 
             <div class="card-scene">
                 <div class="card-3d" id="flashcard" onclick="flipCard()">
+
+                    <!-- CARD FRONT -->
                     <div class="card-face card-front">
                         <div class="srs-badge srs-new" id="srs-badge">ใหม่</div>
                         <div class="pos-badge" id="f-pos">-</div>
@@ -1163,6 +1163,7 @@
                         <div class="tap-hint">👆 แตะการ์ดเพื่อดูความหมาย</div>
                     </div>
 
+                    <!-- CARD BACK -->
                     <div class="card-face card-back">
                         <div class="pos-badge" id="b-pos">-</div>
                         <div class="card-meaning" id="b-mean">-</div>
@@ -1177,6 +1178,13 @@
                                 <button class="rec-btn" onclick="speakCur()">🔊 ฟัง</button>
                                 <button class="rec-btn" id="rec-btn" onclick="toggleRecord()">🎤 พูดเพื่อตรวจ</button>
                             </div>
+                            <!-- ✅ v3.52: Stroke Order button — แสดงเฉพาะ zh/jp + Kanji -->
+                            <button class="rec-btn" id="stroke-btn" onclick="showStrokeOrder()" style="display:none; width:100%; margin-top:8px;
+                                       background:rgba(129,140,248,0.1);
+                                       border-color:rgba(129,140,248,0.35);
+                                       color:var(--accent2);">
+                                ✍️ ดูลำดับเส้น (Stroke Order)
+                            </button>
                             <div class="score-area" id="score-area">
                                 <div class="heard-word" id="heard-word"></div>
                                 <div class="score-bar-wrap">
@@ -1190,6 +1198,7 @@
                         </div>
                         <div style="font-size:13px;color:var(--text3)">ประเมินตัวเองแล้วกดปุ่มด้านล่าง</div>
                     </div>
+
                 </div>
             </div>
 
@@ -1200,6 +1209,7 @@
             </div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════ TAB: QUIZ -->
         <div id="tab-quiz" style="display:none">
             <div class="qmode-bar">
                 <button class="qmode-btn active" id="qm-mc" onclick="setQuizMode('mc')">4 ตัวเลือก</button>
@@ -1277,34 +1287,40 @@
             </div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════ TAB: SEARCH -->
         <div id="tab-search" style="display:none">
             <div class="sec-title">🎬 โหมดแกะเสียงอนิเมะ & ค้นหาอัจฉริยะ</div>
             <div class="search-card">
                 <div class="field-label">ค้นหาคำศัพท์ย้อนกลับจากภาษาไทย</div>
                 <input type="text" id="txt-search-box" class="field-input"
                     placeholder="พิมพ์ความหมายภาษาไทย เช่น 'กิน', 'งานอดิเรก'...">
-                <button class="search-btn" onclick="executeThaiSearchLogic()" style="margin-bottom:12px;"><i
-                        class="fa-solid fa-magnifying-glass"></i> ค้นหาด้วยตัวอักษร</button>
-
+                <button class="search-btn" onclick="executeThaiSearchLogic()" style="margin-bottom:12px;">
+                    <i class="fa-solid fa-magnifying-glass"></i> ค้นหาด้วยตัวอักษร
+                </button>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <button class="search-btn" style="background:#475569; color:#fff;"
-                        onclick="startThaiVoiceSearch()"><i class="fa-solid fa-microphone"></i> พูดไทยหาศัพท์</button>
+                    <button class="search-btn" style="background:#475569; color:#fff;" onclick="startThaiVoiceSearch()">
+                        <i class="fa-solid fa-microphone"></i> พูดไทยหาศัพท์
+                    </button>
                     <button class="search-btn"
                         style="background:linear-gradient(135deg, var(--accent), var(--accent2));"
-                        onclick="startAnimeVoiceSearch()"><i class="fa-solid fa-clapperboard"></i>
-                        แกะเสียงอนิเมะ</button>
+                        onclick="startAnimeVoiceSearch()">
+                        <i class="fa-solid fa-clapperboard"></i> แกะเสียงอนิเมะ
+                    </button>
                 </div>
             </div>
             <div class="prog-tab-title" id="search-status-lbl">ผลลัพธ์การสแกนหาคำศัพท์:</div>
             <div id="search-results-list"></div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════ TAB: REVIEW -->
         <div id="tab-review" style="display:none">
-            <div style="font-size:15px;color:var(--text3);margin-bottom:12px;font-weight:600">📋 คำที่กด "ยาก" —
-                ต้องทบทวน</div>
+            <div style="font-size:15px;color:var(--text3);margin-bottom:12px;font-weight:600">
+                📋 คำที่กด "ยาก" — ต้องทบทวน
+            </div>
             <div id="review-list"></div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════ TAB: PROGRESS -->
         <div id="tab-progress" style="display:none">
             <div style="margin-bottom:18px">
                 <div class="prog-tab-title">📊 ความก้าวหน้า 7 วัน</div>
@@ -1342,20 +1358,23 @@
             </div>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════ TAB: SETTINGS -->
         <div id="tab-settings" style="display:none">
 
+            <!-- ① Language & Theme -->
             <div style="margin-bottom:18px">
-                <div class="sec-title">🌐 สภาพแวดล้อมภาษา & ธีมแอป (v3.51)</div>
+                <div class="sec-title">🌐 สภาพแวดล้อมภาษา & ธีมแอป</div>
                 <div class="setting-card">
                     <div class="setting-row">
                         <div>
                             <div class="setting-label">เลือกสลับภาษาเรียน</div>
                             <div class="setting-sub">สลับระบบคลังศัพท์และสถิติแยกอิสระ</div>
                         </div>
+                        <!-- ✅ v3.52: ใช้ข้อความแทน Flag Emoji (ไม่แสดงบน Windows Desktop) -->
                         <select id="lang-select" class="lang-selector" onchange="switchLanguage(this.value)">
-                            <option value="en">🇬🇧 English (CEFR)</option>
-                            <option value="zh">🇨🇳 Chinese (HSK)</option>
-                            <option value="jp">🇯🇵 Japanese (JLPT)</option>
+                            <option value="en">EN · English (CEFR)</option>
+                            <option value="zh">ZH · 中文 (HSK)</option>
+                            <option value="jp">JP · 日本語 (JLPT)</option>
                         </select>
                     </div>
                     <div class="setting-row">
@@ -1363,12 +1382,14 @@
                             <div class="setting-label">โหมดการแสดงผล</div>
                             <div class="setting-sub">สลับระหว่างโหมดมืด และ โหมดชานมพาสเทล</div>
                         </div>
-                        <button class="theme-btn-setup" onclick="toggleTheme()"><i
-                                class="fa-solid fa-wand-magic-sparkles"></i> สลับธีม</button>
+                        <button class="theme-btn-setup" onclick="toggleTheme()">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> สลับธีม
+                        </button>
                     </div>
                 </div>
             </div>
 
+            <!-- ② Notifications & TTS -->
             <div style="margin-bottom:18px">
                 <div class="sec-title">🔔 การแจ้งเตือน & เสียง</div>
                 <div class="setting-card">
@@ -1377,9 +1398,10 @@
                             <div class="setting-label">สำเนียงเสียงภาษาอังกฤษ (TTS)</div>
                             <div class="setting-sub">เลือกสำเนียงหลักตอนฝึกฝั่งภาษาอังกฤษ</div>
                         </div>
-                        <select class="time-input" style="width:110px;" id="tts-accent" onchange="saveSettings()">
-                            <option value="US">🇺🇸 US</option>
-                            <option value="UK">🇬🇧 UK</option>
+                        <!-- ✅ v3.52: ใช้ข้อความแทน Flag Emoji -->
+                        <select class="time-input" style="width:120px;" id="tts-accent" onchange="saveSettings()">
+                            <option value="US">American (US)</option>
+                            <option value="UK">British (UK)</option>
                         </select>
                     </div>
                     <div class="setting-row">
@@ -1405,6 +1427,7 @@
                 </div>
             </div>
 
+            <!-- ③ Add Custom Word -->
             <div style="margin-bottom:18px">
                 <div class="sec-title">⭐ เพิ่มคำศัพท์ของฉัน</div>
                 <div class="add-word-form">
@@ -1425,6 +1448,26 @@
                 <div id="custom-list"></div>
             </div>
 
+            <!-- ④ Cache Management (v3.52) -->
+            <div style="margin-bottom:18px">
+                <div class="sec-title">🗄️ จัดการพื้นที่ Cache</div>
+                <div class="setting-card">
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Stroke Order Cache</div>
+                            <div class="setting-sub" id="stroke-cache-info">กำลังตรวจสอบ...</div>
+                        </div>
+                        <button onclick="clearStrokeCache()" style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.3);
+                            color:var(--accent);border-radius:10px;padding:8px 14px;
+                            font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+                            white-space:nowrap;">
+                            🗑️ ล้าง
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⑤ About -->
             <div style="margin-bottom:18px">
                 <div class="sec-title">ℹ️ เกี่ยวกับแอป</div>
                 <div class="setting-card">
@@ -1446,13 +1489,17 @@
                             <div class="setting-label">รีเซ็ตข้อมูลทั้งหมด</div>
                             <div class="setting-sub" style="color:var(--red)">ลบข้อมูลทุกภาษาและสถิติทั้งหมด</div>
                         </div>
-                        <button onclick="resetAll()"
-                            style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--red);border-radius:10px;padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">รีเซ็ต</button>
+                        <button onclick="resetAll()" style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);
+                            color:var(--red);border-radius:10px;padding:8px 16px;
+                            font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
+                            รีเซ็ต
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+        </div><!-- /tab-settings -->
+    </div><!-- /scroll -->
 
     <nav class="bnav">
         <button class="bnav-btn active" onclick="setTab('flash')" id="nav-flash"><span
@@ -1466,25 +1513,54 @@
                 class="ic">⚙️</span>ตั้งค่า</button>
     </nav>
 
-    <script>
-        // GLOBAL APP CONFIGURATION v3.51
-        let WORDS = {};
-        let currentLang = ld('ov_lang_env', 'en'); // 🇬🇧 บังคับโหลดภาษาอังกฤษเป็น Default แรกสุดของแอปเสมอเพื่อความเสถียร
+    <!-- ✅ v3.52: Stroke Order Modal -->
+    <div id="stroke-modal" onclick="closeStrokeModal()" style="display:none; position:fixed; inset:0;
+               background:rgba(0,0,0,0.80); z-index:9999;
+               align-items:center; justify-content:center; padding:20px;">
+        <div onclick="event.stopPropagation()" style="background:var(--bg2); border-radius:22px; padding:24px 20px;
+                   text-align:center; width:min(320px,90vw);
+                   border:var(--btn-border); box-shadow:0 24px 64px rgba(0,0,0,0.5);">
+            <div id="stroke-char-label" style="font-size:15px; font-weight:800; color:var(--text);
+                       margin-bottom:14px; line-height:1.5;"></div>
+            <div id="stroke-target" style="display:flex; justify-content:center; align-items:center; min-height:220px;">
+            </div>
+            <div style="display:flex; gap:10px; margin-top:16px; justify-content:center;">
+                <button class="rec-btn" onclick="if(strokeWriter) strokeWriter.animateCharacter()"
+                    style="flex:none; padding:10px 18px;">
+                    ▶️ เล่นอีกรอบ
+                </button>
+                <button class="rec-btn" onclick="closeStrokeModal()" style="flex:none; padding:10px 18px;">
+                    ✕ ปิด
+                </button>
+            </div>
+        </div>
+    </div>
 
-        // คลังข้อมูลสำหรับกระจายตัวแปรแบบแซนด์บ็อกซ์ (Isolated Language Sandbox)
+    <script>
+        // ════════════════════════════════════════════════════════════════
+        // GLOBAL CONFIG — APP_VERSION / APP_CACHE / STROKE_CACHE / STROKE_LIMIT
+        // โหลดมาจาก config.js แล้ว (script tag ใน <head>)
+        // ════════════════════════════════════════════════════════════════
+
+        // Set version badge ทันทีจาก config.js (ก่อน loadAppInfo fetch)
+        document.getElementById('ver-badge').textContent = APP_VERSION;
+        document.getElementById('app-ver-badge').textContent = APP_VERSION;
+        document.title = 'VocabEcosystem PWA ' + APP_VERSION;
+
+        let WORDS = {};
+        let currentLang = ld('ov_lang_env', 'en');
+
         let streak, dailyLog, srsData, allScores, customWords;
 
         function sv(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
         function ld(k, d) { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch (e) { return d; } }
 
-        // 🔥 กลไกโหลดสถานะแบบพาร์ทิชัน แยกประวัติตามภาษาจริง 100% ไม่ตีกันมั่ว
         function reloadLanguageState() {
             streak = ld(`ov_streak_${currentLang}`, 0);
             dailyLog = ld(`ov_daily_${currentLang}`, {});
             srsData = ld(`ov_srs_${currentLang}`, {});
             allScores = ld(`ov_scores_${currentLang}`, []);
             customWords = ld(`ov_custom_${currentLang}`, []);
-
             document.getElementById('streak-num').textContent = streak;
             if (WORDS) WORDS.MY = customWords;
         }
@@ -1503,68 +1579,68 @@
             spdTimer: null, spdSec: 0, spdScore: 0, spdCor: 0, spdWr: 0, spdPool: [], spdIdx: 0
         };
 
+        // ── PWA Install ──────────────────────────────────────────────────────
         let deferPWA = null;
-        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferPWA = e; document.getElementById('install-banner').classList.add('show'); });
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault(); deferPWA = e;
+            document.getElementById('install-banner').classList.add('show');
+        });
         document.getElementById('install-btn').onclick = async () => {
-            if (!deferPWA) return; deferPWA.prompt(); const { outcome } = await deferPWA.userChoice;
-            if (outcome === 'accepted') document.getElementById('install-banner').classList.remove('show'); deferPWA = null;
+            if (!deferPWA) return;
+            deferPWA.prompt();
+            const { outcome } = await deferPWA.userChoice;
+            if (outcome === 'accepted') document.getElementById('install-banner').classList.remove('show');
+            deferPWA = null;
         };
 
+        // ── Theme ────────────────────────────────────────────────────────────
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
             const isLight = document.body.classList.contains('light-theme');
-            document.querySelector('.theme-btn-setup').innerHTML = isLight ? '<i class="fa-solid fa-sun"></i> ธีมพาสเทล' : '<i class="fa-solid fa-moon"></i> ธีมมืด';
+            document.querySelector('.theme-btn-setup').innerHTML = isLight
+                ? '<i class="fa-solid fa-sun"></i> ธีมพาสเทล'
+                : '<i class="fa-solid fa-moon"></i> ธีมมืด';
         }
 
+        // ── App Info ─────────────────────────────────────────────────────────
+        // v3.52: ใช้ APP_VERSION จาก config.js (set ทันที) → info.json แค่ subtitle + features
         async function loadAppInfo() {
             try {
                 const res = await fetch('./info.json');
                 const info = await res.json();
-                document.querySelector('.ver').textContent = info.version;
-                document.getElementById('app-ver-badge').textContent = info.version;
                 document.getElementById('app-subtitle').textContent = info.subtitle;
-
                 const featureHtml = info.features.map(f =>
-                    `<div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text2); text-align:left;">
-             <span style="font-size:16px;">${f.icon}</span> <span>${f.text}</span>
-           </div>`
+                    `<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);text-align:left;">
+                       <span style="font-size:16px;">${f.icon}</span><span>${f.text}</span>
+                     </div>`
                 ).join('');
                 document.getElementById('app-features').innerHTML = featureHtml;
             } catch (e) {
                 console.error('ไม่สามารถโหลด info.json ได้:', e);
+                document.getElementById('app-subtitle').textContent = 'International Polyglot Vocabulary Edition';
             }
         }
 
-        // 🌐 ENVIRONMENT DYNAMIC LOAD ENGINE
+        // ── Language Switch ──────────────────────────────────────────────────
         async function switchLanguage(lang) {
             currentLang = lang;
             sv('ov_lang_env', lang);
-
-            // ป้องกันอาการเรียกตัวแปรดอมก่อนสร้างเสร็จชั่วคราว
             const selectBox = document.getElementById('lang-select');
             if (selectBox) selectBox.value = lang;
-
             try {
                 loadAppInfo();
                 document.getElementById('f-word').textContent = 'Loading...';
-
                 const response = await fetch(`./words_${lang}.json`);
                 const data = await response.json();
-
                 WORDS = data;
-
-                // บังคับสลับสถิติมารันข้อมูลของภาษานั้นๆ ทันที
                 reloadLanguageState();
-
                 renderLevelBar();
-
                 const availableLevels = Object.keys(WORDS).filter(k => k !== 'MY');
                 const lastLevel = ld(`ov_last_level_${currentLang}`, availableLevels[0]);
                 const defaultLvl = availableLevels.includes(lastLevel) ? lastLevel : availableLevels[0];
-
                 setLevel(defaultLvl);
             } catch (error) {
-                console.error('เกิดข้อผิดพลาดในการโหลดไฟล์สัญกรณ์คลังศัพท์:', error);
+                console.error('เกิดข้อผิดพลาดในการโหลดไฟล์คลังศัพท์:', error);
                 document.getElementById('f-word').textContent = 'Error Loading Data';
                 renderLevelBar();
             }
@@ -1574,19 +1650,18 @@
             const container = document.getElementById('lvl-bar');
             if (!container) return;
             const levels = Object.keys(WORDS).filter(k => k !== 'MY');
-
             let html = levels.map(lvl =>
                 `<button class="lvl-chip" data-lvl="${lvl}" onclick="setLevel('${lvl}')">${lvl}</button>`
             ).join('');
-
-            html += `<button class="lvl-chip" data-lvl="MY" id="chip-my" style="display:${customWords && customWords.length > 0 ? '' : 'none'}" onclick="setLevel('MY')">⭐ ของฉัน</button>`;
+            html += `<button class="lvl-chip" data-lvl="MY" id="chip-my"
+                        style="display:${customWords && customWords.length > 0 ? '' : 'none'}"
+                        onclick="setLevel('MY')">⭐ ของฉัน</button>`;
             container.innerHTML = html;
         }
 
-        async function initApp() {
-            switchLanguage(currentLang);
-        }
+        async function initApp() { switchLanguage(currentLang); }
 
+        // ── Tab Navigation ───────────────────────────────────────────────────
         function setTab(tab) {
             S.tab = tab;
             ['flash', 'quiz', 'search', 'review', 'progress', 'settings'].forEach(t => {
@@ -1611,13 +1686,19 @@
             });
             resetSession();
             if (S.tab === 'quiz') setQuizMode(S.quizMode);
+            prefetchStrokeData(lvl); // ✅ v3.52: prefetch stroke data ขณะออนไลน์
         }
 
+        // ── Card Pool ────────────────────────────────────────────────────────
         function getPool() {
             const base = WORDS[S.level] || [];
             if (base.length === 0) return [];
             const pool = [];
-            base.forEach(w => { const s = srsData[w.w] || 'new'; if (s === 'review') { pool.push(w); pool.push(w); } else pool.push(w); });
+            base.forEach(w => {
+                const s = srsData[w.w] || 'new';
+                if (s === 'review') { pool.push(w); pool.push(w); }
+                else pool.push(w);
+            });
             return pool.sort(() => Math.random() - 0.5);
         }
 
@@ -1631,7 +1712,10 @@
             if (S.idx >= S.pool.length) {
                 document.getElementById('f-word').textContent = S.pool.length === 0 ? 'ไม่มีคำศัพท์' : 'เยี่ยมมาก! 🎉';
                 document.getElementById('f-ph').textContent = S.pool.length === 0 ? 'เลือก Level อื่น' : 'ครบทุกคำแล้ว';
-                ['f-pos', 'b-pos', 'b-mean', 'b-mean-en', 'b-ex1', 'b-ex2', 'srs-badge'].forEach(id => document.getElementById(id).textContent = '');
+                ['f-pos', 'b-pos', 'b-mean', 'b-mean-en', 'b-ex1', 'b-ex2', 'srs-badge'].forEach(id => {
+                    document.getElementById(id).textContent = '';
+                });
+                updateStrokeBtn(); // ✅ ซ่อนปุ่ม stroke เมื่อหมดการ์ด
                 return;
             }
             const w = S.pool[S.idx];
@@ -1671,6 +1755,8 @@
             document.getElementById('flashcard').classList.remove('flipped');
             S.flipped = false;
             document.getElementById('score-area').classList.remove('show');
+
+            updateStrokeBtn(); // ✅ v3.52: อัปเดตปุ่ม stroke ทุกครั้งที่เปลี่ยนการ์ด
         }
 
         function flipCard() {
@@ -1685,15 +1771,14 @@
             if (r === 'hard') { S.hardList.push(w); S.ss.hard++; srsData[w.w] = 'review'; }
             else if (r === 'easy') { S.ss.easy++; srsData[w.w] = 'done'; }
             else { if (srsData[w.w] !== 'done') srsData[w.w] = 'review'; }
-
-            // การบันทึกข้อมูลแบบผูกพาร์ทิชันภาษา
             sv(`ov_srs_${currentLang}`, srsData);
             S.ss.done++; S.chCount++;
             logToday();
             document.getElementById('ch-count').textContent = Math.min(S.chCount, 10) + '/10';
             if (S.chCount === 10) {
                 document.getElementById('ch-desc').textContent = '🎉 สำเร็จแล้ว! ยอดเยี่ยม!';
-                streak++; sv(`ov_streak_${currentLang}`, streak); document.getElementById('streak-num').textContent = streak;
+                streak++; sv(`ov_streak_${currentLang}`, streak);
+                document.getElementById('streak-num').textContent = streak;
             }
             S.idx++; updateStats(); showCard();
         }
@@ -1714,51 +1799,59 @@
 
         function logToday() {
             const d = new Date().toISOString().slice(0, 10);
-            dailyLog[d] = (dailyLog[d] || 0) + 1; sv(`ov_daily_${currentLang}`, dailyLog);
+            dailyLog[d] = (dailyLog[d] || 0) + 1;
+            sv(`ov_daily_${currentLang}`, dailyLog);
         }
 
+        // ── TTS ──────────────────────────────────────────────────────────────
         function speak(word) {
             if (!window.speechSynthesis) return;
             speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(word);
-
             if (currentLang === 'zh') u.lang = 'zh-CN';
             else if (currentLang === 'jp') u.lang = 'ja-JP';
             else u.lang = ttsAccent === 'UK' ? 'en-GB' : 'en-US';
-
             u.rate = 0.85; u.pitch = 1;
-            const v = speechSynthesis.getVoices().find(v => v.lang === u.lang || v.lang.startsWith(u.lang.split('-')[0]));
+            const v = speechSynthesis.getVoices()
+                .find(v => v.lang === u.lang || v.lang.startsWith(u.lang.split('-')[0]));
             if (v) u.voice = v;
             speechSynthesis.speak(u);
         }
         function speakCur() { const w = S.pool[S.idx]; if (w) speak(w.w); }
         function speakQuiz() { const w = S.qPool[S.qIdx % S.qPool.length]; if (w) speak(w.w); }
 
+        // ── Voice Recording ──────────────────────────────────────────────────
         function toggleRecord() { if (S.isRec) stopRec(); else startRec(); }
         function startRec() {
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) { alert('กรุณาใช้ Chrome (Android) หรือ Safari (iPhone)'); return; }
             if (S.idx >= S.pool.length) return;
             S.recObj = new SR();
-
             if (currentLang === 'zh') S.recObj.lang = 'zh-CN';
             else if (currentLang === 'jp') S.recObj.lang = 'ja-JP';
             else S.recObj.lang = ttsAccent === 'UK' ? 'en-GB' : 'en-US';
-
             S.recObj.interimResults = false; S.recObj.maxAlternatives = 5;
-            S.recObj.onstart = () => { S.isRec = true; const b = document.getElementById('rec-btn'); b.textContent = '⏹ หยุด'; b.classList.add('active', 'pulsing'); };
+            S.recObj.onstart = () => {
+                S.isRec = true;
+                const b = document.getElementById('rec-btn');
+                b.textContent = '⏹ หยุด'; b.classList.add('active');
+            };
             S.recObj.onresult = (e) => {
                 const target = S.pool[S.idx].w.toLowerCase().trim();
                 const alts = Array.from(e.results[0]).map(a => a.transcript.toLowerCase().trim());
                 scoreRec(target, alts);
             };
-            S.recObj.onerror = (e) => { stopRec(); if (e.error === 'no-speech') showScore(0, '', 'ไม่ได้ยินเสียง', '#F87171'); };
+            S.recObj.onerror = (e) => {
+                stopRec();
+                if (e.error === 'no-speech') showScore(0, '', 'ไม่ได้ยินเสียง', '#F87171');
+            };
             S.recObj.onend = () => stopRec();
             S.recObj.start();
         }
         function stopRec() {
-            S.isRec = false; const b = document.getElementById('rec-btn');
-            b.textContent = '🎤 พูดเพื่อตรวจ'; b.classList.remove('active', 'pulsing');
+            S.isRec = false;
+            const b = document.getElementById('rec-btn');
+            b.textContent = '🎤 พูดเพื่อตรวจ'; b.classList.remove('active');
             if (S.recObj) { try { S.recObj.stop(); } catch (e) { } S.recObj = null; }
         }
         function scoreRec(target, alts) {
@@ -1770,14 +1863,18 @@
             else if (pct >= 65) { grade = 'ดีมาก 👍'; color = '#38BDF8'; msg = 'ออกเสียงได้ดี'; }
             else if (pct >= 45) { grade = 'ใช้ได้ 🙂'; color = '#FBBF24'; msg = 'ลองฟังและพูดซ้ำ'; }
             else { grade = 'ลองใหม่ 💪'; color = '#F87171'; msg = 'กด ฟัง แล้วพูดตาม'; }
-            S.ss.scores.push(pct); allScores.push(pct); sv(`ov_scores_${currentLang}`, allScores);
+            S.ss.scores.push(pct); allScores.push(pct);
+            sv(`ov_scores_${currentLang}`, allScores);
             updateStats(); showScore(pct, bestA, grade, color, msg);
         }
         function editDist(t, h) {
             if (!h) return 0; if (h === t) return 1;
             const a = t.split(''), b = h.split(''), m = a.length, n = b.length;
-            const dp = Array.from({ length: m + 1 }, (_, i) => Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0));
-            for (let i = 1; i <= m; i++)for (let j = 1; j <= n; j++)dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+            const dp = Array.from({ length: m + 1 }, (_, i) =>
+                Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+            for (let i = 1; i <= m; i++)
+                for (let j = 1; j <= n; j++)
+                    dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
             return Math.max(0, 1 - dp[m][n] / Math.max(m, n));
         }
         function showScore(pct, heard, grade, color, msg) {
@@ -1789,12 +1886,12 @@
             document.getElementById('score-detail').textContent = msg;
         }
 
+        // ── Quiz ─────────────────────────────────────────────────────────────
         function setQuizMode(mode) {
             S.quizMode = mode;
             ['mc', 'fill', 'speed'].forEach(m => {
                 document.getElementById(m + '-section').style.display = m === mode ? '' : 'none';
-                const b = document.getElementById('qm-' + m);
-                b.classList.toggle('active', m === mode);
+                document.getElementById('qm-' + m).classList.toggle('active', m === mode);
             });
             if (mode === 'mc') initQuiz();
             else if (mode === 'fill') initFill();
@@ -1803,23 +1900,24 @@
 
         function initQuiz() {
             if (!WORDS[S.level] || WORDS[S.level].length < 4) return;
-            S.qPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5); S.qIdx = 0; S.qAns = false; showQuiz();
+            S.qPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5);
+            S.qIdx = 0; S.qAns = false; showQuiz();
         }
         function showQuiz() {
             if (!S.qPool.length) return;
             const w = S.qPool[S.qIdx % S.qPool.length];
             document.getElementById('qq-word').textContent = w.w;
-
             let rd = w.ph || '';
             if (currentLang === 'zh') rd = w.pinyin || '';
             else if (currentLang === 'jp') rd = w.kana || '';
             document.getElementById('qq-ph').textContent = rd + ' · ' + (w.pos || 'vocab');
-
             const all = WORDS[S.level];
-            const opts = [w, ...all.filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)].sort(() => Math.random() - 0.5);
+            const opts = [w, ...all.filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)]
+                .sort(() => Math.random() - 0.5);
             const el = document.getElementById('quiz-opts'); el.innerHTML = '';
             opts.forEach(o => {
-                const b = document.createElement('button'); b.className = 'quiz-opt'; b.textContent = o.m_th || o.m;
+                const b = document.createElement('button');
+                b.className = 'quiz-opt'; b.textContent = o.m_th || o.m;
                 b.onclick = () => answerQuiz(o.w === w.w, b); el.appendChild(b);
             });
             document.getElementById('quiz-result').className = 'quiz-result';
@@ -1829,7 +1927,12 @@
         function answerQuiz(ok, btn) {
             if (S.qAns) return; S.qAns = true;
             btn.classList.add(ok ? 'correct' : 'wrong');
-            if (!ok) { const w = S.qPool[S.qIdx % S.qPool.length]; document.querySelectorAll('.quiz-opt').forEach(b => { if (b.textContent === (w.m_th || w.m)) b.classList.add('correct'); }); }
+            if (!ok) {
+                const w = S.qPool[S.qIdx % S.qPool.length];
+                document.querySelectorAll('.quiz-opt').forEach(b => {
+                    if (b.textContent === (w.m_th || w.m)) b.classList.add('correct');
+                });
+            }
             const r = document.getElementById('quiz-result');
             r.textContent = ok ? '✅ ถูกต้อง! เก่งมากเลย' : '❌ ไม่ถูก — ลองใหม่ได้นะ';
             r.className = 'quiz-result show ' + (ok ? 'ok' : 'no');
@@ -1843,9 +1946,11 @@
             showQuiz();
         }
 
+        // ── Fill in the blank ────────────────────────────────────────────────
         function initFill() {
             if (!WORDS[S.level] || WORDS[S.level].length === 0) return;
-            S.fPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5); S.fIdx = 0; S.fAns = false; showFill();
+            S.fPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5);
+            S.fIdx = 0; S.fAns = false; showFill();
         }
         function showFill() {
             if (!S.fPool.length) return;
@@ -1855,11 +1960,15 @@
             const targetEx = Array.isArray(w.ex) ? (w.ex[0] || '') : (w.ex || '');
             const sent = targetEx.match(re) ? targetEx.replace(re, blank) : blank + ' ' + targetEx;
             document.getElementById('fill-sentence').innerHTML = sent;
-            document.getElementById('fill-hint').textContent = '💡 คำใบ้: ' + w.w[0] + Array(w.w.length - 1).fill('_').join(' ') + ' (' + w.w.length + ' ตัว)';
+            document.getElementById('fill-hint').textContent =
+                '💡 คำใบ้: ' + w.w[0] + Array(w.w.length - 1).fill('_').join(' ') + ' (' + w.w.length + ' ตัว)';
             document.getElementById('fill-result').className = 'fill-result';
             document.getElementById('fill-next').className = 'next-btn';
             S.fAns = false;
-            setTimeout(() => { const i = document.getElementById('fill-inp'); if (i) { i.focus(); i.addEventListener('keydown', e => { if (e.key === 'Enter') checkFill(); }); } }, 100);
+            setTimeout(() => {
+                const i = document.getElementById('fill-inp');
+                if (i) { i.focus(); i.addEventListener('keydown', e => { if (e.key === 'Enter') checkFill(); }); }
+            }, 100);
         }
         function checkFill() {
             if (S.fAns) return;
@@ -1876,8 +1985,13 @@
             document.getElementById('fill-next').className = 'next-btn show';
             speak(w.w); if (ok) logToday();
         }
-        function nextFill() { S.fIdx++; if (S.fIdx >= S.fPool.length) { S.fPool.sort(() => Math.random() - 0.5); S.fIdx = 0; } showFill(); }
+        function nextFill() {
+            S.fIdx++;
+            if (S.fIdx >= S.fPool.length) { S.fPool.sort(() => Math.random() - 0.5); S.fIdx = 0; }
+            showFill();
+        }
 
+        // ── Speed Challenge ──────────────────────────────────────────────────
         function resetSpeed() {
             clearInterval(S.spdTimer);
             document.getElementById('spd-start').style.display = '';
@@ -1887,7 +2001,9 @@
             document.getElementById('spd-best').textContent = b > 0 ? '🏆 สถิติของคุณ: ' + b + ' คะแนน' : '';
         }
         function startSpeed() {
-            if (!WORDS[S.level] || WORDS[S.level].length < 4) { alert("คำศัพท์ในหมวดนี้มีน้อยเกินไปสำหรับ Speed Challenge"); return; }
+            if (!WORDS[S.level] || WORDS[S.level].length < 4) {
+                alert('คำศัพท์ในหมวดนี้มีน้อยเกินไปสำหรับ Speed Challenge'); return;
+            }
             S.spdPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5);
             S.spdIdx = 0; S.spdScore = 0; S.spdCor = 0; S.spdWr = 0; S.spdSec = 60;
             document.getElementById('spd-start').style.display = 'none';
@@ -1920,12 +2036,15 @@
             const w = pool[S.spdIdx % pool.length];
             document.getElementById('spd-word').textContent = w.w;
             document.getElementById('spd-cur').textContent = S.spdScore;
-            const opts = [w, ...WORDS[S.level].filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)].sort(() => Math.random() - 0.5);
+            const opts = [w, ...WORDS[S.level].filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)]
+                .sort(() => Math.random() - 0.5);
             const el = document.getElementById('spd-opts'); el.innerHTML = '';
             opts.forEach(o => {
-                const b = document.createElement('button'); b.className = 'speed-opt'; b.textContent = o.m_th || o.m;
+                const b = document.createElement('button');
+                b.className = 'speed-opt'; b.textContent = o.m_th || o.m;
                 b.onclick = () => {
-                    const ok = o.w === w.w; b.classList.add(ok ? 'correct' : 'wrong');
+                    const ok = o.w === w.w;
+                    b.classList.add(ok ? 'correct' : 'wrong');
                     if (ok) { S.spdScore++; S.spdCor++; } else { S.spdWr++; }
                     document.getElementById('spd-cur').textContent = S.spdScore;
                     S.spdIdx++;
@@ -1935,23 +2054,22 @@
             });
         }
 
+        // ── Anime / Thai Voice Search ────────────────────────────────────────
         function startAnimeVoiceSearch() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return alert('เบราว์เซอร์ไม่รองรับระบบแยกเสียง กรุณาใช้ Chrome หรือ Safari');
             const rec = new SpeechRecognition();
-
             if (currentLang === 'zh') rec.lang = 'zh-CN';
             else if (currentLang === 'jp') rec.lang = 'ja-JP';
             else rec.lang = 'en-US';
-
             rec.maxAlternatives = 5;
-            document.getElementById('search-status-lbl').innerText = "🔊 กำลังฟังเสียงจากอนิเมะ... กรุณาเลียนเสียงพากย์หรือนำไปจ่อลำโพง...";
+            document.getElementById('search-status-lbl').innerText =
+                '🔊 กำลังฟังเสียงจากอนิเมะ... กรุณาเลียนเสียงพากย์หรือนำไปจ่อลำโพง...';
             rec.start();
-
             rec.onresult = (e) => {
                 const alts = Array.from(e.results[0]).map(a => a.transcript.trim());
-                document.getElementById('search-status-lbl').innerText = `🎬 ถอดคำอ่านได้: "${alts[0]}" — รายการคำศัพท์ที่เสียงตรงกัน:`;
-
+                document.getElementById('search-status-lbl').innerText =
+                    `🎬 ถอดคำอ่านได้: "${alts[0]}" — รายการคำศัพท์ที่เสียงตรงกัน:`;
                 let matches = [];
                 Object.keys(WORDS).forEach(lvl => {
                     if (lvl === 'MY') return;
@@ -1962,17 +2080,17 @@
                 });
                 renderSearchResults(matches);
             };
-            rec.onerror = () => { document.getElementById('search-status-lbl').innerText = "❌ ตรวจสอบไมโครโฟนหรือลองใหม่อีกครั้ง"; };
+            rec.onerror = () => {
+                document.getElementById('search-status-lbl').innerText = '❌ ตรวจสอบไมโครโฟนหรือลองใหม่อีกครั้ง';
+            };
         }
-
         function startThaiVoiceSearch() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
             const rec = new SpeechRecognition();
             rec.lang = 'th-TH';
-            document.getElementById('search-status-lbl').innerText = "🎙️ กำลังรับฟังเสียงภาษาไทยของคุณ...";
+            document.getElementById('search-status-lbl').innerText = '🎙️ กำลังรับฟังเสียงภาษาไทยของคุณ...';
             rec.start();
-
             rec.onresult = (e) => {
                 const textTh = e.results[0][0].transcript;
                 document.getElementById('txt-search-box').value = textTh;
@@ -1980,67 +2098,69 @@
                 searchByThaiText(textTh);
             };
         }
-
         function executeThaiSearchLogic() {
             const txt = document.getElementById('txt-search-box').value.trim();
-            if (!txt) return;
-            searchByThaiText(txt);
+            if (!txt) return; searchByThaiText(txt);
         }
-
         function searchByThaiText(keyword) {
             let matches = [];
             Object.keys(WORDS).forEach(lvl => {
                 if (lvl === 'MY') return;
                 WORDS[lvl].forEach(item => {
-                    if (item.m_th.includes(keyword) || (item.m_en && item.m_en.toLowerCase().includes(keyword.toLowerCase()))) {
+                    if (item.m_th.includes(keyword) ||
+                        (item.m_en && item.m_en.toLowerCase().includes(keyword.toLowerCase()))) {
                         matches.push(item);
                     }
                 });
             });
             renderSearchResults(matches.slice(0, 15));
         }
-
         function renderSearchResults(results) {
             const container = document.getElementById('search-results-list');
             if (results.length === 0) {
-                container.innerHTML = `<p style="padding:20px; color:var(--red); text-align:center;">❌ ไม่พบคำศัพท์ที่ใกล้เคียงในคลังภาษานี้</p>`;
+                container.innerHTML = `<p style="padding:20px;color:var(--red);text-align:center;">❌ ไม่พบคำศัพท์ที่ใกล้เคียงในคลังภาษานี้</p>`;
                 return;
             }
             container.innerHTML = results.map(item => `
-        <div class="candidate-item" onclick="jumpToSelectedWord('${item.w}')">
-          <div>
-            <div class="ri-word">${item.w}</div>
-            <div class="ri-ph">${item.pinyin || item.kana || item.ph || ''} · ${item.pos || 'vocab'}</div>
-          </div>
-          <div class="ri-mean">${item.m_th}</div>
-        </div>
-      `).join('');
+                <div class="candidate-item" onclick="jumpToSelectedWord('${item.w}')">
+                    <div>
+                        <div class="ri-word">${item.w}</div>
+                        <div class="ri-ph">${item.pinyin || item.kana || item.ph || ''} · ${item.pos || 'vocab'}</div>
+                    </div>
+                    <div class="ri-mean">${item.m_th}</div>
+                </div>
+            `).join('');
         }
-
         function jumpToSelectedWord(wordText) {
             Object.keys(WORDS).forEach(lvl => {
                 const idx = WORDS[lvl].findIndex(w => w.w === wordText);
-                if (idx !== -1) {
-                    setTab('flash');
-                    setLevel(lvl);
-                    S.idx = idx;
-                    showCard();
-                }
+                if (idx !== -1) { setTab('flash'); setLevel(lvl); S.idx = idx; showCard(); }
             });
         }
 
+        // ── Review Tab ───────────────────────────────────────────────────────
         function renderReview() {
             const el = document.getElementById('review-list');
-            if (!S.hardList.length) { el.innerHTML = '<div style="color:var(--text3);font-size:15px;padding:30px 0;text-align:center">ยังไม่มีคำที่ต้องทบทวน<br>เล่น flash card ก่อนนะ! 😊</div>'; return; }
+            if (!S.hardList.length) {
+                el.innerHTML = '<div style="color:var(--text3);font-size:15px;padding:30px 0;text-align:center">ยังไม่มีคำที่ต้องทบทวน<br>เล่น flash card ก่อนนะ! 😊</div>';
+                return;
+            }
             const uniq = [...new Map(S.hardList.map(w => [w.w, w])).values()];
             el.innerHTML = uniq.map(w => {
                 let rd = w.ph || '';
                 if (currentLang === 'zh') rd = w.pinyin || '';
                 else if (currentLang === 'jp') rd = w.kana || '';
-                return `<div class="review-item"><div><div class="ri-word">${w.w}</div><div class="ri-ph">${rd} · ${w.pos || 'vocab'}</div></div><div style="display:flex;align-items:center;gap:10px"><div class="ri-mean">${w.m_th || w.m}</div><button class="ri-tts" onclick="speak('${w.w}')">🔊</button></div></div>`;
+                return `<div class="review-item">
+                    <div><div class="ri-word">${w.w}</div><div class="ri-ph">${rd} · ${w.pos || 'vocab'}</div></div>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div class="ri-mean">${w.m_th || w.m}</div>
+                        <button class="ri-tts" onclick="speak('${w.w}')">🔊</button>
+                    </div>
+                </div>`;
             }).join('');
         }
 
+        // ── Progress Tab ─────────────────────────────────────────────────────
         function renderProgress() {
             const days = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'];
             const today = new Date();
@@ -2054,13 +2174,19 @@
             const el = document.getElementById('bar-chart'); if (el) el.innerHTML = '';
             bars.forEach(b => {
                 const h = mx > 0 ? Math.round((b.c / mx) * 72) : 2;
-                if (el) el.innerHTML += `<div class="bar-col"><div class="bar-val">${b.c || ''}</div><div class="bar-fill" style="height:${Math.max(h, 2)}px"></div><div class="bar-label">${b.l}</div></div>`;
+                if (el) el.innerHTML += `
+                    <div class="bar-col">
+                        <div class="bar-val">${b.c || ''}</div>
+                        <div class="bar-fill" style="height:${Math.max(h, 2)}px"></div>
+                        <div class="bar-label">${b.l}</div>
+                    </div>`;
             });
             document.getElementById('tot-words').textContent = Object.keys(srsData).length;
             document.getElementById('tot-streak').textContent = streak;
-            const avg = allScores.length ? Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length) + '%' : '-';
+            const avg = allScores.length
+                ? Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length) + '%'
+                : '-';
             document.getElementById('tot-score').textContent = avg;
-
             let nN = 0, nR = 0, nD = 0;
             Object.keys(WORDS).forEach(lvl => {
                 if (lvl === 'MY') return;
@@ -2069,20 +2195,22 @@
                     if (s === 'new') nN++; else if (s === 'review') nR++; else nD++;
                 });
             });
-
             document.getElementById('srs-new-n').textContent = nN;
             document.getElementById('srs-rev-n').textContent = nR;
             document.getElementById('srs-done-n').textContent = nD;
         }
 
+        // ── Settings Tab ─────────────────────────────────────────────────────
         function renderSettings() {
             document.getElementById('notif-toggle').classList.toggle('on', notifOn);
             document.getElementById('tts-accent').value = ttsAccent;
             [1, 2, 3, 4].forEach(i => document.getElementById('nt-' + i).value = notifTimes[i - 1] || '');
-
             const activeTimes = notifTimes.filter(t => t).join(', ');
-            document.getElementById('notif-sub').textContent = (notifOn && activeTimes) ? 'แจ้งเตือน: ' + activeTimes : 'กดเพื่ออนุญาต / ยังไม่ตั้งเวลา';
+            document.getElementById('notif-sub').textContent = (notifOn && activeTimes)
+                ? 'แจ้งเตือน: ' + activeTimes
+                : 'กดเพื่ออนุญาต / ยังไม่ตั้งเวลา';
             renderCustomList();
+            checkStrokeCacheSize(); // ✅ v3.52: อัปเดตข้อมูล cache ทุกครั้งที่เปิด settings
         }
 
         function toggleNotif() {
@@ -2096,23 +2224,19 @@
                 notifOn = false; sv('ov_notif', false); saveSettings();
             }
         }
-
         function saveSettings() {
             ttsAccent = document.getElementById('tts-accent').value;
             sv('ov_tts', ttsAccent);
             notifTimes = [1, 2, 3, 4].map(i => document.getElementById('nt-' + i).value);
             sv('ov_notif_times', notifTimes);
-            renderSettings();
-            scheduleNotif();
+            renderSettings(); scheduleNotif();
         }
-
         function scheduleNotif() {
             if (!notifOn || Notification.permission !== 'granted') return;
             if (notifTimerId) clearTimeout(notifTimerId);
             const times = notifTimes.filter(t => t);
             if (times.length === 0) return;
-            const now = new Date();
-            let nextTime = null; let minDiff = Infinity;
+            const now = new Date(); let minDiff = Infinity; let nextTime = null;
             times.forEach(t => {
                 const [h, m] = t.split(':').map(Number);
                 let d = new Date(); d.setHours(h, m, 0, 0);
@@ -2127,38 +2251,201 @@
             }
         }
 
+        // ── Custom Words ─────────────────────────────────────────────────────
         function addCustomWord() {
             const w = document.getElementById('inp-word').value.trim();
             const m = document.getElementById('inp-mean').value.trim();
             if (!w || !m) { alert('กรุณาใส่คำศัพท์และความหมายอย่างน้อย'); return; }
-            const entry = { w, ph: document.getElementById('inp-ph').value.trim() || '', pos: document.getElementById('inp-pos').value.trim() || 'noun', m_th: m, ex: [document.getElementById('inp-ex').value.trim() || w + ' is a useful word.'] };
-            customWords.push(entry); WORDS.MY = [...customWords]; sv(`ov_custom_${currentLang}`, customWords);
+            const entry = {
+                w, ph: document.getElementById('inp-ph').value.trim() || '',
+                pos: document.getElementById('inp-pos').value.trim() || 'noun',
+                m_th: m, ex: [document.getElementById('inp-ex').value.trim() || w + ' is a useful word.']
+            };
+            customWords.push(entry); WORDS.MY = [...customWords];
+            sv(`ov_custom_${currentLang}`, customWords);
             ['inp-word', 'inp-ph', 'inp-pos', 'inp-mean', 'inp-ex'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('chip-my').style.display = '';
             renderCustomList();
         }
-
-        function deleteCustomWord(i) { customWords.splice(i, 1); WORDS.MY = [...customWords]; sv(`ov_custom_${currentLang}`, customWords); renderCustomList(); if (!customWords.length) document.getElementById('chip-my').style.display = 'none'; }
-
+        function deleteCustomWord(i) {
+            customWords.splice(i, 1); WORDS.MY = [...customWords];
+            sv(`ov_custom_${currentLang}`, customWords);
+            renderCustomList();
+            if (!customWords.length) document.getElementById('chip-my').style.display = 'none';
+        }
         function renderCustomList() {
             const el = document.getElementById('custom-list');
-            if (!customWords.length) { el.innerHTML = '<div style="font-size:14px;color:var(--text3);text-align:center;padding:12px 0">ยังไม่มีคำที่เพิ่ม</div>'; return; }
-            el.innerHTML = customWords.map((w, i) => `<div class="custom-item"><div><div style="font-size:16px;font-weight:700">${w.w}</div><div style="font-size:13px;color:var(--text3)">${w.m_th || w.m}</div></div><button class="del-btn" onclick="deleteCustomWord(${i})">🗑️</button></div>`).join('');
+            if (!customWords.length) {
+                el.innerHTML = '<div style="font-size:14px;color:var(--text3);text-align:center;padding:12px 0">ยังไม่มีคำที่เพิ่ม</div>';
+                return;
+            }
+            el.innerHTML = customWords.map((w, i) =>
+                `<div class="custom-item">
+                    <div>
+                        <div style="font-size:16px;font-weight:700">${w.w}</div>
+                        <div style="font-size:13px;color:var(--text3)">${w.m_th || w.m}</div>
+                    </div>
+                    <button class="del-btn" onclick="deleteCustomWord(${i})">🗑️</button>
+                </div>`
+            ).join('');
         }
 
+        // ── Reset All ────────────────────────────────────────────────────────
         function resetAll() {
             if (!confirm('ต้องการล้างสถิติและคลังข้อมูลของทุกภาษาในเครื่องจริง ๆ ใช่ไหม?')) return;
             ['en', 'zh', 'jp'].forEach(lang => {
-                [`ov_streak_${lang}`, `ov_daily_${lang}`, `ov_srs_${lang}`, `ov_spd_best_${lang}`, `ov_spd_games_${lang}`, `ov_spd_tc_${lang}`, `ov_spd_tq_${lang}`, `ov_scores_${lang}`, `ov_custom_${lang}`, `ov_last_level_${lang}`].forEach(k => {
-                    try { localStorage.removeItem(k); } catch (e) { }
-                });
+                [`ov_streak_${lang}`, `ov_daily_${lang}`, `ov_srs_${lang}`,
+                `ov_spd_best_${lang}`, `ov_spd_games_${lang}`, `ov_spd_tc_${lang}`,
+                `ov_spd_tq_${lang}`, `ov_scores_${lang}`, `ov_custom_${lang}`,
+                `ov_last_level_${lang}`].forEach(k => { try { localStorage.removeItem(k); } catch (e) { } });
             });
             ['ov_notif', 'ov_notif_times', 'ov_tts', 'ov_lang_env'].forEach(k => localStorage.removeItem(k));
             location.reload();
         }
 
+        // ════════════════════════════════════════════════════════════════
+        // ✅ v3.52: STROKE ORDER MODULE (Hanzi Writer)
+        // ════════════════════════════════════════════════════════════════
+        let strokeWriter = null;
+        let hanziWriterLoaded = false;
+
+        /** ตรวจว่าอักษรนี้อยู่ใน CJK range (Kanji / Hanzi) หรือไม่ */
+        function isKanjiOrHanzi(c) {
+            return /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/.test(c);
+        }
+
+        /** แสดง/ซ่อนปุ่ม stroke ตามภาษาและตัวอักษรปัจจุบัน */
+        function updateStrokeBtn() {
+            const btn = document.getElementById('stroke-btn');
+            if (!btn) return;
+            if (S.idx >= S.pool.length) { btn.style.display = 'none'; return; }
+            const w = S.pool[S.idx];
+            const show = (currentLang === 'zh' || currentLang === 'jp')
+                && w && [...w.w].some(isKanjiOrHanzi);
+            btn.style.display = show ? '' : 'none';
+        }
+
+        /** เปิด modal แสดงแอนิเมชันลำดับเส้น */
+        async function showStrokeOrder() {
+            const w = S.pool[S.idx];
+            if (!w) return;
+            const char = [...w.w].find(isKanjiOrHanzi);
+            if (!char) return;
+
+            // Lazy-load Hanzi Writer (ครั้งแรกเท่านั้น)
+            if (!hanziWriterLoaded) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js';
+                        s.onload = resolve;
+                        s.onerror = reject;
+                        document.head.appendChild(s);
+                    });
+                    hanziWriterLoaded = true;
+                } catch (e) {
+                    alert('โหลด Hanzi Writer ไม่ได้ — กรุณาตรวจสอบอินเทอร์เน็ต');
+                    return;
+                }
+            }
+
+            // เตรียม modal
+            const modal = document.getElementById('stroke-modal');
+            const target = document.getElementById('stroke-target');
+            document.getElementById('stroke-char-label').textContent =
+                `✍️  ${w.w}  ·  ${w.m_th || w.m}`;
+            target.innerHTML = '';
+            modal.style.display = 'flex';
+
+            // ปรับสีตามธีม
+            const isDark = !document.body.classList.contains('light-theme');
+            const strokeCol = isDark ? '#F1F5F9' : '#1E293B';
+            const outlineCol = isDark ? '#334155' : '#DFD9CE';
+
+            strokeWriter = HanziWriter.create(target, char, {
+                width: 220,
+                height: 220,
+                padding: 12,
+                strokeColor: strokeCol,
+                outlineColor: outlineCol,
+                strokeAnimationSpeed: 1,
+                delayBetweenStrokes: 300,
+                showOutline: true,
+                onLoadCharDataError: () => {
+                    target.innerHTML = `
+                        <p style="color:var(--red);padding:20px;font-size:14px;line-height:1.8;">
+                            ❌ ไม่พบข้อมูลอักษรนี้<br>
+                            <span style="color:var(--text3);font-size:12px;">
+                                Hiragana / Katakana ไม่มีใน Hanzi Writer DB
+                            </span>
+                        </p>`;
+                }
+            });
+            strokeWriter.animateCharacter();
+        }
+
+        function closeStrokeModal() {
+            document.getElementById('stroke-modal').style.display = 'none';
+            if (strokeWriter) {
+                try { strokeWriter.cancelAnimation(); } catch (e) { }
+                strokeWriter = null;
+            }
+        }
+
+        /** Prefetch stroke data สำหรับทุกคำใน level นั้น (background, ไม่บล็อก UI) */
+        async function prefetchStrokeData(level) {
+            if (currentLang !== 'zh' && currentLang !== 'jp') return;
+            if (!('caches' in window)) return;
+            const words = WORDS[level] || [];
+            if (!words.length) return;
+            try {
+                const cache = await caches.open(STROKE_CACHE); // STROKE_CACHE จาก config.js
+                for (const word of words) {
+                    for (const char of [...word.w]) {
+                        if (!isKanjiOrHanzi(char)) continue;
+                        const url = `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/${char}.json`;
+                        cache.match(url).then(hit => {
+                            if (!hit) fetch(url).then(r => r.ok && cache.put(url, r)).catch(() => { });
+                        }).catch(() => { });
+                    }
+                }
+            } catch (e) { /* offline — ข้ามได้ */ }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // ✅ v3.52: CACHE MANAGEMENT UI
+        // ════════════════════════════════════════════════════════════════
+        async function checkStrokeCacheSize() {
+            const el = document.getElementById('stroke-cache-info');
+            if (!el) return;
+            if (!('caches' in window)) { el.textContent = 'Browser ไม่รองรับ Cache API'; return; }
+            try {
+                const cache = await caches.open(STROKE_CACHE);
+                const keys = await cache.keys();
+                const count = keys.length;
+                const kb = count * 3; // ประมาณ 3 KB/อักษร
+                const size = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+                el.textContent = count === 0
+                    ? 'ว่างเปล่า — ดูลำดับเส้นขณะออนไลน์เพื่อสะสม cache'
+                    : `${count} อักษร · ประมาณ ${size}  (limit ${STROKE_LIMIT} อักษร)`;
+            } catch (e) {
+                el.textContent = 'ไม่สามารถอ่านข้อมูล cache ได้';
+            }
+        }
+
+        async function clearStrokeCache() {
+            if (!confirm('ล้าง Stroke Cache ทั้งหมด?\nต้องออนไลน์ถึงจะดูแอนิเมชันได้อีกครั้ง')) return;
+            try { await caches.delete(STROKE_CACHE); checkStrokeCacheSize(); } catch (e) { }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // BOOT
+        // ════════════════════════════════════════════════════════════════
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => { });
-        if (window.speechSynthesis) { speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => speechSynthesis.getVoices()); }
+        if (window.speechSynthesis) {
+            speechSynthesis.getVoices();
+            speechSynthesis.addEventListener('voiceschanged', () => speechSynthesis.getVoices());
+        }
 
         initApp();
     </script>

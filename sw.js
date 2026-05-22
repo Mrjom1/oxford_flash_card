@@ -1,53 +1,87 @@
-const CACHE_NAME = 'oxford-vocab-v3.5.1'; // 🔥 ปรับเป็น version.js เพื่อทุบแคชเก่า และบังคับอัปเดตหน้าจอชานมพาสเทลทันที
+// ดึง version / cache names จาก config.js จุดเดียว
+importScripts('./config.js');
+// ตอนนี้ APP_VERSION, APP_CACHE, STROKE_CACHE, STROKE_LIMIT พร้อมใช้แล้ว
 
-// 1. เก็บเฉพาะ "App Shell" หรือโครงสร้างหลักของแอปไว้ล่วงหน้า
 const PRECACHE_ASSETS = [
     './index.html',
     './manifest.json',
-    './info.json'
+    './info.json',
+    './config.js'   // precache config ด้วยเสมอ
 ];
 
-// ขั้นตอน Install: โหลดเฉพาะไฟล์โครงสร้างหลัก
+// ── Install: cache app shell ──────────────────────────────────────────────────
 self.addEventListener('install', e => {
     e.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE_ASSETS))
+        caches.open(APP_CACHE).then(cache => cache.addAll(PRECACHE_ASSETS))
     );
     self.skipWaiting();
 });
 
-// ขั้นตอน Activate: ล้าง Cache เวอร์ชันเก่าๆ (v3.5 / v3.50) ทิ้งทั้งหมดทันที
+// ── Activate: ทุบ cache เวอร์ชันเก่าทิ้ง ─────────────────────────────────────
 self.addEventListener('activate', e => {
     e.waitUntil(
         caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+            Promise.all(
+                keys
+                    .filter(k => k !== APP_CACHE && k !== STROKE_CACHE)
+                    .map(k => caches.delete(k))
+            )
         )
     );
     self.clients.claim();
 });
 
-// ขั้นตอน Fetch: ตรวจจับการดึงข้อมูล และทำระบบ Runtime Caching แยกไฟล์คำศัพท์ 3 ภาษา
+// ── Fetch: Runtime caching แบบแยก strategy ───────────────────────────────────
 self.addEventListener('fetch', e => {
-    e.respondWith(
-        caches.match(e.request).then(cachedResponse => {
-            // 1. ถ้ามีใน Cache แล้ว ให้ดึงมาแสดงผลทันที (ทำงานออฟไลน์ได้)
-            if (cachedResponse) {
-                return cachedResponse;
-            }
+    const url = e.request.url;
 
-            // 2. ถ้ายังไม่มีใน Cache ให้ไปดึงจากเน็ตมาแสดง
-            return fetch(e.request).then(networkResponse => {
-                // เช็กว่าเป็นไฟล์คำศัพท์ที่มี Prefix ขึ้นต้นด้วย words_ หรือไม่
-                if (e.request.url.includes('words_')) {
-                    // แอบบันทึกไฟล์คำศัพท์ภาษานั้นๆ ลงคลังแคชของผู้ใช้แบบ On-Demand
-                    return caches.open(CACHE_NAME).then(cache => {
-                        cache.put(e.request, networkResponse.clone());
-                        return networkResponse;
-                    });
+    // Stroke character data → cache แยก + FIFO cap
+    if (url.includes('hanzi-writer-data')) {
+        e.respondWith(handleStrokeCache(e.request));
+        return;
+    }
+
+    // ทุกอย่างอื่น → cache-first, network fallback
+    e.respondWith(
+        caches.match(e.request).then(cached => {
+            if (cached) return cached;
+
+            return fetch(e.request).then(res => {
+                const shouldCache =
+                    url.includes('words_') ||                    // vocab JSON ทุกภาษา
+                    url.includes('hanzi-writer.min.js');         // Hanzi Writer library
+
+                if (shouldCache) {
+                    caches.open(APP_CACHE)
+                        .then(c => c.put(e.request, res.clone()));
                 }
-                return networkResponse;
-            }).catch(() => {
-                return new Response('', { status: 404, statusText: 'Offline and asset not cached' });
-            });
+                return res;
+            }).catch(() => new Response('', {
+                status: 404,
+                statusText: 'Offline and asset not cached'
+            }));
         })
     );
 });
+
+// ── handleStrokeCache: FIFO เพื่อไม่ให้ cache บวม ────────────────────────────
+async function handleStrokeCache(request) {
+    const cache = await caches.open(STROKE_CACHE);
+    const cached = await cache.match(request);
+    if (cached) return cached;  // hit → คืนทันที
+
+    try {
+        const response = await fetch(request);
+        if (!response.ok) return response;
+
+        const keys = await cache.keys();
+        if (keys.length >= STROKE_LIMIT) {
+            await cache.delete(keys[0]); // ลบรายการเก่าสุด (FIFO)
+        }
+
+        await cache.put(request, response.clone());
+        return response;
+    } catch {
+        return new Response('', { status: 404, statusText: 'Offline' });
+    }
+}
