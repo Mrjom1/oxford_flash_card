@@ -14,10 +14,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Kodchasan:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- ✅ v3.52: โหลด config.js ก่อน script ทุกตัว — APP_VERSION / APP_CACHE / STROKE_CACHE / STROKE_LIMIT -->
+    <!-- ✅ v3.53: โหลด config.js ก่อน script ทุกตัว — APP_VERSION / APP_CACHE / STROKE_CACHE / STROKE_LIMIT / LEVEL_ORDER / STROKE_LANGS / READING_FIELD -->
     <script src="./config.js"></script>
     <style>
-        /* 🎨 THEME ENGINE VARIABLES v3.52 */
+        /* 🎨 THEME ENGINE VARIABLES v3.53 */
         :root {
             --bg: #0F172A;
             --bg2: #1E293B;
@@ -1114,10 +1114,20 @@
     </div>
 
     <div class="scroll" id="scroll">
+        <!-- Android/Desktop PWA install banner -->
         <div class="install-banner" id="install-banner">
             <div style="flex:1;font-size:14px;color:var(--text2)">📲 <strong
                     style="color:var(--text)">ติดตั้งเป็นแอป</strong> บนเครื่องได้เลย</div>
             <button class="install-btn" id="install-btn">ติดตั้ง</button>
+        </div>
+        <!-- ✅ v3.53: iOS Safari install banner -->
+        <div class="install-banner" id="ios-install-banner">
+            <div style="flex:1;">
+                <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">📲 ติดตั้งบน iPhone / iPad</div>
+                <div style="font-size:12px;color:var(--text3);">กด <strong style="color:var(--accent)">Share</strong> แล้วเลือก <strong style="color:var(--accent)">Add to Home Screen</strong></div>
+            </div>
+            <button class="install-btn" onclick="dismissIOSBanner()"
+                style="background:var(--bg3);color:var(--text2);padding:8px 14px;font-size:13px;">✕</button>
         </div>
 
         <!-- ═══════════════════════════════════════════════════ TAB: FLASHCARD -->
@@ -1179,7 +1189,8 @@
                                 <button class="rec-btn" id="rec-btn" onclick="toggleRecord()">🎤 พูดเพื่อตรวจ</button>
                             </div>
                             <!-- ✅ v3.52: Stroke Order button — แสดงเฉพาะ zh/jp + Kanji -->
-                            <button class="rec-btn" id="stroke-btn" onclick="showStrokeOrder()" style="display:none; width:100%; margin-top:8px;
+                            <button class="rec-btn" id="stroke-btn" onclick="showStrokeOrder()"
+                                style="display:none; width:100%; margin-top:8px;
                                        background:rgba(129,140,248,0.1);
                                        border-color:rgba(129,140,248,0.35);
                                        color:var(--accent2);">
@@ -1230,14 +1241,12 @@
 
             <div id="fill-section" style="display:none">
                 <div class="fill-card">
-                    <div style="font-size:13px;color:var(--text3);margin-bottom:10px;font-weight:700">✏️
-                        เติมคำในช่องว่าง</div>
+                    <div style="font-size:13px;color:var(--text3);margin-bottom:10px;font-weight:700">✏️ เติมคำในช่องว่าง</div>
                     <div class="fill-sentence" id="fill-sentence"></div>
                     <div class="fill-hint" id="fill-hint"></div>
                     <button class="fill-check-btn" onclick="checkFill()">ตรวจคำตอบ ✓</button>
                     <div class="fill-result" id="fill-result"></div>
-                    <button class="next-btn" id="fill-next" onclick="nextFill()" style="margin-top:10px">ถัดไป
-                        →</button>
+                    <button class="next-btn" id="fill-next" onclick="nextFill()" style="margin-top:10px">ถัดไป →</button>
                 </div>
             </div>
 
@@ -1245,8 +1254,7 @@
                 <div id="spd-start" class="speed-wrap">
                     <div style="font-size:60px;margin-bottom:14px">⚡</div>
                     <div style="font-size:24px;font-weight:800;margin-bottom:10px">Speed Challenge</div>
-                    <div style="font-size:15px;color:var(--text2);margin-bottom:28px;line-height:1.6">ตอบให้เยอะที่สุดใน
-                        60 วินาที!</div>
+                    <div style="font-size:15px;color:var(--text2);margin-bottom:28px;line-height:1.6">ตอบให้เยอะที่สุดใน 60 วินาที!</div>
                     <button class="start-btn" onclick="startSpeed()">เริ่มเลย! 🚀</button>
                     <div id="spd-best" style="font-size:15px;color:var(--text3)"></div>
                 </div>
@@ -1298,7 +1306,8 @@
                     <i class="fa-solid fa-magnifying-glass"></i> ค้นหาด้วยตัวอักษร
                 </button>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <button class="search-btn" style="background:#475569; color:#fff;" onclick="startThaiVoiceSearch()">
+                    <button class="search-btn" style="background:#475569; color:#fff;"
+                        onclick="startThaiVoiceSearch()">
                         <i class="fa-solid fa-microphone"></i> พูดไทยหาศัพท์
                     </button>
                     <button class="search-btn"
@@ -1414,14 +1423,10 @@
                     <div class="setting-row" style="flex-direction:column; align-items:flex-start;">
                         <div class="setting-label" style="margin-bottom:10px;">เวลาแจ้งเตือน (สูงสุด 4 เวลา)</div>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%;">
-                            <input type="time" class="time-input" style="width:100%" id="nt-1"
-                                onchange="saveSettings()">
-                            <input type="time" class="time-input" style="width:100%" id="nt-2"
-                                onchange="saveSettings()">
-                            <input type="time" class="time-input" style="width:100%" id="nt-3"
-                                onchange="saveSettings()">
-                            <input type="time" class="time-input" style="width:100%" id="nt-4"
-                                onchange="saveSettings()">
+                            <input type="time" class="time-input" style="width:100%" id="nt-1" onchange="saveSettings()">
+                            <input type="time" class="time-input" style="width:100%" id="nt-2" onchange="saveSettings()">
+                            <input type="time" class="time-input" style="width:100%" id="nt-3" onchange="saveSettings()">
+                            <input type="time" class="time-input" style="width:100%" id="nt-4" onchange="saveSettings()">
                         </div>
                     </div>
                 </div>
@@ -1432,13 +1437,11 @@
                 <div class="sec-title">⭐ เพิ่มคำศัพท์ของฉัน</div>
                 <div class="add-word-form">
                     <div class="field-label">คำศัพท์ (Target Vocab)</div>
-                    <input class="field-input" id="inp-word" placeholder="เช่น schedule หรือ 科学" type="text"
-                        autocapitalize="none">
+                    <input class="field-input" id="inp-word" placeholder="เช่น schedule หรือ 科学" type="text" autocapitalize="none">
                     <div class="field-label">คำอ่าน (Phonetic / Pinyin / Kana)</div>
                     <input class="field-input" id="inp-ph" placeholder="ตัวระบุคำอ่านออกเสียง" type="text">
                     <div class="field-label">ประเภทคำ</div>
-                    <input class="field-input" id="inp-pos" placeholder="noun / verb / adj" type="text"
-                        autocapitalize="none">
+                    <input class="field-input" id="inp-pos" placeholder="noun / verb / adj" type="text" autocapitalize="none">
                     <div class="field-label">ความหมายภาษาไทย</div>
                     <input class="field-input" id="inp-mean" placeholder="ความหมายไทย" type="text">
                     <div class="field-label">ตัวอย่างประโยค — ไม่บังคับ</div>
@@ -1457,7 +1460,8 @@
                             <div class="setting-label">Stroke Order Cache</div>
                             <div class="setting-sub" id="stroke-cache-info">กำลังตรวจสอบ...</div>
                         </div>
-                        <button onclick="clearStrokeCache()" style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.3);
+                        <button onclick="clearStrokeCache()"
+                            style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.3);
                             color:var(--accent);border-radius:10px;padding:8px 14px;
                             font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
                             white-space:nowrap;">
@@ -1489,7 +1493,8 @@
                             <div class="setting-label">รีเซ็ตข้อมูลทั้งหมด</div>
                             <div class="setting-sub" style="color:var(--red)">ลบข้อมูลทุกภาษาและสถิติทั้งหมด</div>
                         </div>
-                        <button onclick="resetAll()" style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);
+                        <button onclick="resetAll()"
+                            style="background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);
                             color:var(--red);border-radius:10px;padding:8px 16px;
                             font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
                             รีเซ็ต
@@ -1502,34 +1507,77 @@
     </div><!-- /scroll -->
 
     <nav class="bnav">
-        <button class="bnav-btn active" onclick="setTab('flash')" id="nav-flash"><span
-                class="ic">🃏</span>การ์ด</button>
+        <button class="bnav-btn active" onclick="setTab('flash')" id="nav-flash"><span class="ic">🃏</span>การ์ด</button>
         <button class="bnav-btn" onclick="setTab('quiz')" id="nav-quiz"><span class="ic">🧠</span>ควิซ</button>
-        <button class="bnav-btn" onclick="setTab('search')" id="nav-search"><span
-                class="ic">🎬</span>แกะเสียง/ค้นหา</button>
+        <button class="bnav-btn" onclick="setTab('search')" id="nav-search"><span class="ic">🎬</span>แกะเสียง/ค้นหา</button>
         <button class="bnav-btn" onclick="setTab('review')" id="nav-review"><span class="ic">📋</span>ทบทวน</button>
         <button class="bnav-btn" onclick="setTab('progress')" id="nav-progress"><span class="ic">📊</span>สถิติ</button>
-        <button class="bnav-btn" onclick="setTab('settings')" id="nav-settings"><span
-                class="ic">⚙️</span>ตั้งค่า</button>
+        <button class="bnav-btn" onclick="setTab('settings')" id="nav-settings"><span class="ic">⚙️</span>ตั้งค่า</button>
     </nav>
 
-    <!-- ✅ v3.52: Stroke Order Modal -->
-    <div id="stroke-modal" onclick="closeStrokeModal()" style="display:none; position:fixed; inset:0;
-               background:rgba(0,0,0,0.80); z-index:9999;
-               align-items:center; justify-content:center; padding:20px;">
-        <div onclick="event.stopPropagation()" style="background:var(--bg2); border-radius:22px; padding:24px 20px;
-                   text-align:center; width:min(320px,90vw);
+    <!-- ✅ v3.53: Stroke Order Modal — multi-char nav + quiz mode -->
+    <div id="stroke-modal" onclick="closeStrokeModal()"
+        style="display:none; position:fixed; inset:0;
+               background:rgba(0,0,0,0.82); z-index:9999;
+               align-items:center; justify-content:center; padding:16px;">
+        <div onclick="event.stopPropagation()"
+            style="background:var(--bg2); border-radius:22px; padding:20px 18px;
+                   text-align:center; width:min(340px,96vw);
                    border:var(--btn-border); box-shadow:0 24px 64px rgba(0,0,0,0.5);">
-            <div id="stroke-char-label" style="font-size:15px; font-weight:800; color:var(--text);
-                       margin-bottom:14px; line-height:1.5;"></div>
-            <div id="stroke-target" style="display:flex; justify-content:center; align-items:center; min-height:220px;">
+
+            <!-- Word + meaning -->
+            <div id="stroke-word-label"
+                style="font-size:14px; font-weight:800; color:var(--text);
+                       margin-bottom:10px; line-height:1.5;"></div>
+
+            <!-- ← → char navigation (แสดงเฉพาะคำที่มีหลายตัวอักษร) -->
+            <div id="stroke-nav"
+                style="display:none; align-items:center; justify-content:center;
+                       gap:10px; margin-bottom:8px;">
+                <button id="stroke-prev" class="rec-btn" onclick="navigateStrokeChar(-1)"
+                    style="flex:none; padding:8px 14px; font-size:16px; line-height:1;">◀</button>
+                <div>
+                    <div id="stroke-char-display"
+                        style="font-size:34px; font-weight:700; color:var(--accent2); line-height:1;"></div>
+                    <div id="stroke-nav-indicator"
+                        style="font-size:11px; color:var(--text3); margin-top:3px; font-weight:700;"></div>
+                </div>
+                <button id="stroke-next" class="rec-btn" onclick="navigateStrokeChar(1)"
+                    style="flex:none; padding:8px 14px; font-size:16px; line-height:1;">▶</button>
             </div>
-            <div style="display:flex; gap:10px; margin-top:16px; justify-content:center;">
-                <button class="rec-btn" onclick="if(strokeWriter) strokeWriter.animateCharacter()"
-                    style="flex:none; padding:10px 18px;">
-                    ▶️ เล่นอีกรอบ
+
+            <!-- Single char display (ไม่มี nav) -->
+            <div id="stroke-char-solo"
+                style="font-size:34px; font-weight:700; color:var(--accent2); margin-bottom:8px;"></div>
+
+            <!-- HanziWriter canvas -->
+            <div id="stroke-target"
+                style="display:flex; justify-content:center; align-items:center; min-height:200px;"></div>
+
+            <!-- Quiz result -->
+            <div id="stroke-quiz-result" style="display:none; margin-top:10px;
+                padding:10px 14px; border-radius:10px; font-size:14px; font-weight:700;"></div>
+
+            <!-- Action buttons -->
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; justify-content:center;">
+                <button class="rec-btn" onclick="replayStroke()"
+                    style="flex:none; padding:10px 12px; font-size:12px;">
+                    ▶️ เล่น
                 </button>
-                <button class="rec-btn" onclick="closeStrokeModal()" style="flex:none; padding:10px 18px;">
+                <button class="rec-btn" onclick="startStrokeQuiz(true)"
+                    style="flex:none; padding:10px 12px; font-size:12px;
+                           background:rgba(52,211,153,0.1);
+                           border-color:rgba(52,211,153,0.35); color:var(--green);">
+                    ✍️ วาดตาม
+                </button>
+                <button class="rec-btn" onclick="startStrokeQuiz(false)"
+                    style="flex:none; padding:10px 12px; font-size:12px;
+                           background:rgba(129,140,248,0.1);
+                           border-color:rgba(129,140,248,0.35); color:var(--accent2);">
+                    🧠 วาดเอง
+                </button>
+                <button class="rec-btn" onclick="closeStrokeModal()"
+                    style="flex:none; padding:10px 12px; font-size:12px;">
                     ✕ ปิด
                 </button>
             </div>
@@ -1556,18 +1604,18 @@
         function ld(k, d) { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : d; } catch (e) { return d; } }
 
         function reloadLanguageState() {
-            streak = ld(`ov_streak_${currentLang}`, 0);
-            dailyLog = ld(`ov_daily_${currentLang}`, {});
-            srsData = ld(`ov_srs_${currentLang}`, {});
-            allScores = ld(`ov_scores_${currentLang}`, []);
+            streak      = ld(`ov_streak_${currentLang}`, 0);
+            dailyLog    = ld(`ov_daily_${currentLang}`, {});
+            srsData     = ld(`ov_srs_${currentLang}`, {});
+            allScores   = ld(`ov_scores_${currentLang}`, []);
             customWords = ld(`ov_custom_${currentLang}`, []);
             document.getElementById('streak-num').textContent = streak;
             if (WORDS) WORDS.MY = customWords;
         }
 
-        let notifOn = ld('ov_notif', false);
-        let notifTimes = ld('ov_notif_times', ['08:00', '', '', '']);
-        let ttsAccent = ld('ov_tts', 'US');
+        let notifOn      = ld('ov_notif', false);
+        let notifTimes   = ld('ov_notif_times', ['08:00', '', '', '']);
+        let ttsAccent    = ld('ov_tts', 'US');
         let notifTimerId = null;
 
         let S = {
@@ -1593,6 +1641,22 @@
             deferPWA = null;
         };
 
+        // ✅ v3.53: iOS Safari — beforeinstallprompt ไม่ทำงาน ต้องแนะนำ Share แทน
+        function isSafariIOS() {
+            const ua = navigator.userAgent;
+            return /iP(hone|ad|od)/.test(ua) &&
+                   /WebKit/.test(ua) &&
+                   !/(CriOS|FxiOS|OPiOS|mercury)/.test(ua) &&
+                   !window.navigator.standalone; // ถ้าติดตั้งแล้ว standalone=true → ไม่ต้องแสดง
+        }
+        function dismissIOSBanner() {
+            document.getElementById('ios-install-banner').classList.remove('show');
+            sv('ov_ios_banner_ok', true);
+        }
+        if (isSafariIOS() && !ld('ov_ios_banner_ok', false)) {
+            document.getElementById('ios-install-banner').classList.add('show');
+        }
+
         // ── Theme ────────────────────────────────────────────────────────────
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
@@ -1606,7 +1670,7 @@
         // v3.52: ใช้ APP_VERSION จาก config.js (set ทันที) → info.json แค่ subtitle + features
         async function loadAppInfo() {
             try {
-                const res = await fetch('./info.json');
+                const res  = await fetch('./info.json');
                 const info = await res.json();
                 document.getElementById('app-subtitle').textContent = info.subtitle;
                 const featureHtml = info.features.map(f =>
@@ -1631,13 +1695,13 @@
                 loadAppInfo();
                 document.getElementById('f-word').textContent = 'Loading...';
                 const response = await fetch(`./words_${lang}.json`);
-                const data = await response.json();
+                const data     = await response.json();
                 WORDS = data;
                 reloadLanguageState();
                 renderLevelBar();
                 const availableLevels = Object.keys(WORDS).filter(k => k !== 'MY');
-                const lastLevel = ld(`ov_last_level_${currentLang}`, availableLevels[0]);
-                const defaultLvl = availableLevels.includes(lastLevel) ? lastLevel : availableLevels[0];
+                const lastLevel       = ld(`ov_last_level_${currentLang}`, availableLevels[0]);
+                const defaultLvl      = availableLevels.includes(lastLevel) ? lastLevel : availableLevels[0];
                 setLevel(defaultLvl);
             } catch (error) {
                 console.error('เกิดข้อผิดพลาดในการโหลดไฟล์คลังศัพท์:', error);
@@ -1649,8 +1713,14 @@
         function renderLevelBar() {
             const container = document.getElementById('lvl-bar');
             if (!container) return;
-            const levels = Object.keys(WORDS).filter(k => k !== 'MY');
-            let html = levels.map(lvl =>
+            const allKeys = Object.keys(WORDS).filter(k => k !== 'MY');
+            // ✅ v3.53: เรียง Level ง่าย→ยาก ตาม LEVEL_ORDER ใน config.js
+            const order  = (LEVEL_ORDER && LEVEL_ORDER[currentLang]) || [];
+            const sorted = [
+                ...order.filter(l => allKeys.includes(l)),
+                ...allKeys.filter(l => !order.includes(l)).sort()
+            ];
+            let html = sorted.map(lvl =>
                 `<button class="lvl-chip" data-lvl="${lvl}" onclick="setLevel('${lvl}')">${lvl}</button>`
             ).join('');
             html += `<button class="lvl-chip" data-lvl="MY" id="chip-my"
@@ -1669,12 +1739,12 @@
                 document.getElementById('nav-' + t).classList.toggle('active', t === tab);
             });
             const showLvl = ['flash', 'quiz', 'review'].includes(tab);
-            document.getElementById('lvl-bar').style.display = showLvl ? '' : 'none';
-            document.getElementById('prog-wrap').style.display = tab === 'flash' ? '' : 'none';
-            if (tab === 'review') renderReview();
+            document.getElementById('lvl-bar').style.display    = showLvl ? '' : 'none';
+            document.getElementById('prog-wrap').style.display  = tab === 'flash' ? '' : 'none';
+            if (tab === 'review')   renderReview();
             if (tab === 'progress') renderProgress();
             if (tab === 'settings') renderSettings();
-            if (tab === 'quiz') setQuizMode(S.quizMode);
+            if (tab === 'quiz')     setQuizMode(S.quizMode);
             document.getElementById('scroll').scrollTop = 0;
         }
 
@@ -1711,8 +1781,8 @@
         function showCard() {
             if (S.idx >= S.pool.length) {
                 document.getElementById('f-word').textContent = S.pool.length === 0 ? 'ไม่มีคำศัพท์' : 'เยี่ยมมาก! 🎉';
-                document.getElementById('f-ph').textContent = S.pool.length === 0 ? 'เลือก Level อื่น' : 'ครบทุกคำแล้ว';
-                ['f-pos', 'b-pos', 'b-mean', 'b-mean-en', 'b-ex1', 'b-ex2', 'srs-badge'].forEach(id => {
+                document.getElementById('f-ph').textContent  = S.pool.length === 0 ? 'เลือก Level อื่น' : 'ครบทุกคำแล้ว';
+                ['f-pos','b-pos','b-mean','b-mean-en','b-ex1','b-ex2','srs-badge'].forEach(id => {
                     document.getElementById(id).textContent = '';
                 });
                 updateStrokeBtn(); // ✅ ซ่อนปุ่ม stroke เมื่อหมดการ์ด
@@ -1721,18 +1791,17 @@
             const w = S.pool[S.idx];
             const s = srsData[w.w] || 'new';
             const bd = document.getElementById('srs-badge');
-            bd.className = 'srs-badge srs-' + s;
+            bd.className   = 'srs-badge srs-' + s;
             bd.textContent = { new: 'ใหม่', review: 'ทบทวน', done: 'รู้แล้ว' }[s];
 
-            document.getElementById('f-pos').textContent = w.pos || 'VOCAB';
+            document.getElementById('f-pos').textContent  = w.pos || 'VOCAB';
             document.getElementById('f-word').textContent = w.w;
 
-            let readingText = w.ph || '';
-            if (currentLang === 'zh') readingText = w.pinyin || '';
-            else if (currentLang === 'jp') readingText = w.kana || '';
-            document.getElementById('f-ph').textContent = readingText;
+            // ✅ v3.53: ใช้ READING_FIELD จาก config.js — รองรับ ko: romanization
+            const readingField = (READING_FIELD && READING_FIELD[currentLang]) || 'ph';
+            document.getElementById('f-ph').textContent = w[readingField] || '';
 
-            document.getElementById('b-pos').textContent = w.pos || 'VOCAB';
+            document.getElementById('b-pos').textContent  = w.pos || 'VOCAB';
             document.getElementById('b-mean').textContent = w.m_th || w.m || '-';
 
             let extraInfo = w.m_en || '';
@@ -1768,9 +1837,9 @@
         function rate(r) {
             if (!S.flipped || S.pool.length === 0) { flipCard(); return; }
             const w = S.pool[S.idx];
-            if (r === 'hard') { S.hardList.push(w); S.ss.hard++; srsData[w.w] = 'review'; }
+            if (r === 'hard')      { S.hardList.push(w); S.ss.hard++; srsData[w.w] = 'review'; }
             else if (r === 'easy') { S.ss.easy++; srsData[w.w] = 'done'; }
-            else { if (srsData[w.w] !== 'done') srsData[w.w] = 'review'; }
+            else                   { if (srsData[w.w] !== 'done') srsData[w.w] = 'review'; }
             sv(`ov_srs_${currentLang}`, srsData);
             S.ss.done++; S.chCount++;
             logToday();
@@ -1780,21 +1849,28 @@
                 streak++; sv(`ov_streak_${currentLang}`, streak);
                 document.getElementById('streak-num').textContent = streak;
             }
-            S.idx++; updateStats(); showCard();
+            S.idx++; updateStats();
+
+            // ✅ v3.53 Bug fix: หมุนการ์ดกลับหน้าคำศัพท์ก่อน
+            // แล้วค่อย load คำใหม่หลัง CSS transition (0.5s) จบ ไม่เห็นคำแปลแว่บ
+            document.getElementById('flashcard').classList.remove('flipped');
+            document.getElementById('score-area').classList.remove('show');
+            S.flipped = false;
+            setTimeout(() => showCard(), 520);
         }
 
         function updateStats() {
             const t = S.pool.length, ss = S.ss;
             const avg = ss.scores.length ? Math.round(ss.scores.reduce((a, b) => a + b, 0) / ss.scores.length) : null;
-            document.getElementById('s-done').textContent = ss.done;
-            document.getElementById('s-easy').textContent = ss.easy;
-            document.getElementById('s-hard').textContent = ss.hard;
+            document.getElementById('s-done').textContent  = ss.done;
+            document.getElementById('s-easy').textContent  = ss.easy;
+            document.getElementById('s-hard').textContent  = ss.hard;
             document.getElementById('s-score').textContent = avg !== null ? avg + '%' : '-';
-            const pct = t > 0 ? Math.round((S.idx / t) * 100) : 0;
+            const pct    = t > 0 ? Math.round((S.idx / t) * 100) : 0;
             const fillEl = document.getElementById('prog-fill');
             if (fillEl) fillEl.style.width = pct + '%';
             document.getElementById('prog-label').textContent = S.idx + '/' + t + ' คำ';
-            document.getElementById('prog-pct').textContent = pct + '%';
+            document.getElementById('prog-pct').textContent   = pct + '%';
         }
 
         function logToday() {
@@ -1808,7 +1884,7 @@
             if (!window.speechSynthesis) return;
             speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(word);
-            if (currentLang === 'zh') u.lang = 'zh-CN';
+            if (currentLang === 'zh')      u.lang = 'zh-CN';
             else if (currentLang === 'jp') u.lang = 'ja-JP';
             else u.lang = ttsAccent === 'UK' ? 'en-GB' : 'en-US';
             u.rate = 0.85; u.pitch = 1;
@@ -1817,7 +1893,7 @@
             if (v) u.voice = v;
             speechSynthesis.speak(u);
         }
-        function speakCur() { const w = S.pool[S.idx]; if (w) speak(w.w); }
+        function speakCur()  { const w = S.pool[S.idx]; if (w) speak(w.w); }
         function speakQuiz() { const w = S.qPool[S.qIdx % S.qPool.length]; if (w) speak(w.w); }
 
         // ── Voice Recording ──────────────────────────────────────────────────
@@ -1827,7 +1903,7 @@
             if (!SR) { alert('กรุณาใช้ Chrome (Android) หรือ Safari (iPhone)'); return; }
             if (S.idx >= S.pool.length) return;
             S.recObj = new SR();
-            if (currentLang === 'zh') S.recObj.lang = 'zh-CN';
+            if (currentLang === 'zh')      S.recObj.lang = 'zh-CN';
             else if (currentLang === 'jp') S.recObj.lang = 'ja-JP';
             else S.recObj.lang = ttsAccent === 'UK' ? 'en-GB' : 'en-US';
             S.recObj.interimResults = false; S.recObj.maxAlternatives = 5;
@@ -1838,7 +1914,7 @@
             };
             S.recObj.onresult = (e) => {
                 const target = S.pool[S.idx].w.toLowerCase().trim();
-                const alts = Array.from(e.results[0]).map(a => a.transcript.toLowerCase().trim());
+                const alts   = Array.from(e.results[0]).map(a => a.transcript.toLowerCase().trim());
                 scoreRec(target, alts);
             };
             S.recObj.onerror = (e) => {
@@ -1859,10 +1935,10 @@
             alts.forEach(a => { const s = editDist(target, a); if (s > best) { best = s; bestA = a; } });
             const pct = Math.round(best * 100);
             let grade, color, msg;
-            if (pct >= 85) { grade = 'ยอดเยี่ยม! 🎉'; color = '#34D399'; msg = 'ออกเสียงได้ถูกต้องมาก'; }
-            else if (pct >= 65) { grade = 'ดีมาก 👍'; color = '#38BDF8'; msg = 'ออกเสียงได้ดี'; }
-            else if (pct >= 45) { grade = 'ใช้ได้ 🙂'; color = '#FBBF24'; msg = 'ลองฟังและพูดซ้ำ'; }
-            else { grade = 'ลองใหม่ 💪'; color = '#F87171'; msg = 'กด ฟัง แล้วพูดตาม'; }
+            if      (pct >= 85) { grade = 'ยอดเยี่ยม! 🎉'; color = '#34D399'; msg = 'ออกเสียงได้ถูกต้องมาก'; }
+            else if (pct >= 65) { grade = 'ดีมาก 👍';       color = '#38BDF8'; msg = 'ออกเสียงได้ดี'; }
+            else if (pct >= 45) { grade = 'ใช้ได้ 🙂';      color = '#FBBF24'; msg = 'ลองฟังและพูดซ้ำ'; }
+            else                { grade = 'ลองใหม่ 💪';     color = '#F87171'; msg = 'กด ฟัง แล้วพูดตาม'; }
             S.ss.scores.push(pct); allScores.push(pct);
             sv(`ov_scores_${currentLang}`, allScores);
             updateStats(); showScore(pct, bestA, grade, color, msg);
@@ -1874,12 +1950,12 @@
                 Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0));
             for (let i = 1; i <= m; i++)
                 for (let j = 1; j <= n; j++)
-                    dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+                    dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]);
             return Math.max(0, 1 - dp[m][n] / Math.max(m, n));
         }
         function showScore(pct, heard, grade, color, msg) {
             document.getElementById('score-area').classList.add('show');
-            document.getElementById('heard-word').textContent = heard ? '🎤 ได้ยิน: "' + heard + '"' : '';
+            document.getElementById('heard-word').textContent  = heard ? '🎤 ได้ยิน: "' + heard + '"' : '';
             document.getElementById('score-bar').style.cssText = 'width:' + pct + '%;background:' + color;
             document.getElementById('score-label').textContent = pct + '% — ' + grade;
             document.getElementById('score-label').style.color = color;
@@ -1893,8 +1969,8 @@
                 document.getElementById(m + '-section').style.display = m === mode ? '' : 'none';
                 document.getElementById('qm-' + m).classList.toggle('active', m === mode);
             });
-            if (mode === 'mc') initQuiz();
-            else if (mode === 'fill') initFill();
+            if (mode === 'mc')    initQuiz();
+            else if (mode === 'fill')  initFill();
             else resetSpeed();
         }
 
@@ -1905,13 +1981,12 @@
         }
         function showQuiz() {
             if (!S.qPool.length) return;
-            const w = S.qPool[S.qIdx % S.qPool.length];
+            const w  = S.qPool[S.qIdx % S.qPool.length];
             document.getElementById('qq-word').textContent = w.w;
-            let rd = w.ph || '';
-            if (currentLang === 'zh') rd = w.pinyin || '';
-            else if (currentLang === 'jp') rd = w.kana || '';
+            const readingField = (READING_FIELD && READING_FIELD[currentLang]) || 'ph';
+            const rd = w[readingField] || '';
             document.getElementById('qq-ph').textContent = rd + ' · ' + (w.pos || 'vocab');
-            const all = WORDS[S.level];
+            const all  = WORDS[S.level];
             const opts = [w, ...all.filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)]
                 .sort(() => Math.random() - 0.5);
             const el = document.getElementById('quiz-opts'); el.innerHTML = '';
@@ -1921,7 +1996,7 @@
                 b.onclick = () => answerQuiz(o.w === w.w, b); el.appendChild(b);
             });
             document.getElementById('quiz-result').className = 'quiz-result';
-            document.getElementById('quiz-next').className = 'next-btn';
+            document.getElementById('quiz-next').className   = 'next-btn';
             S.qAns = false;
         }
         function answerQuiz(ok, btn) {
@@ -1956,14 +2031,14 @@
             if (!S.fPool.length) return;
             const w = S.fPool[S.fIdx % S.fPool.length];
             const blank = '<input class="fill-blank" id="fill-inp" placeholder="?" autocomplete="off" autocapitalize="none" spellcheck="false">';
-            const re = new RegExp('\\b' + w.w + '\\b', 'i');
+            const re    = new RegExp('\\b' + w.w + '\\b', 'i');
             const targetEx = Array.isArray(w.ex) ? (w.ex[0] || '') : (w.ex || '');
-            const sent = targetEx.match(re) ? targetEx.replace(re, blank) : blank + ' ' + targetEx;
+            const sent  = targetEx.match(re) ? targetEx.replace(re, blank) : blank + ' ' + targetEx;
             document.getElementById('fill-sentence').innerHTML = sent;
             document.getElementById('fill-hint').textContent =
                 '💡 คำใบ้: ' + w.w[0] + Array(w.w.length - 1).fill('_').join(' ') + ' (' + w.w.length + ' ตัว)';
             document.getElementById('fill-result').className = 'fill-result';
-            document.getElementById('fill-next').className = 'next-btn';
+            document.getElementById('fill-next').className   = 'next-btn';
             S.fAns = false;
             setTimeout(() => {
                 const i = document.getElementById('fill-inp');
@@ -1973,15 +2048,15 @@
         function checkFill() {
             if (S.fAns) return;
             const inp = document.getElementById('fill-inp'); if (!inp) return;
-            const w = S.fPool[S.fIdx % S.fPool.length];
+            const w  = S.fPool[S.fIdx % S.fPool.length];
             const ok = inp.value.trim().toLowerCase() === w.w.toLowerCase();
             S.fAns = true;
-            inp.style.color = ok ? 'var(--green)' : 'var(--red)';
+            inp.style.color            = ok ? 'var(--green)' : 'var(--red)';
             inp.style.borderBottomColor = ok ? 'var(--green)' : 'var(--red)';
             if (!ok) inp.value = w.w;
             const r = document.getElementById('fill-result');
             r.textContent = ok ? '✅ ถูกต้อง! 🎉' : '❌ คำที่ถูกคือ "' + w.w + '"';
-            r.className = 'fill-result show ' + (ok ? 'ok' : 'no');
+            r.className   = 'fill-result show ' + (ok ? 'ok' : 'no');
             document.getElementById('fill-next').className = 'next-btn show';
             speak(w.w); if (ok) logToday();
         }
@@ -1994,8 +2069,8 @@
         // ── Speed Challenge ──────────────────────────────────────────────────
         function resetSpeed() {
             clearInterval(S.spdTimer);
-            document.getElementById('spd-start').style.display = '';
-            document.getElementById('spd-game').style.display = 'none';
+            document.getElementById('spd-start').style.display  = '';
+            document.getElementById('spd-game').style.display   = 'none';
             document.getElementById('spd-result').style.display = 'none';
             const b = ld(`ov_spd_best_${currentLang}`, 0);
             document.getElementById('spd-best').textContent = b > 0 ? '🏆 สถิติของคุณ: ' + b + ' คะแนน' : '';
@@ -2005,43 +2080,43 @@
                 alert('คำศัพท์ในหมวดนี้มีน้อยเกินไปสำหรับ Speed Challenge'); return;
             }
             S.spdPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5);
-            S.spdIdx = 0; S.spdScore = 0; S.spdCor = 0; S.spdWr = 0; S.spdSec = 60;
-            document.getElementById('spd-start').style.display = 'none';
-            document.getElementById('spd-game').style.display = '';
+            S.spdIdx  = 0; S.spdScore = 0; S.spdCor = 0; S.spdWr = 0; S.spdSec = 60;
+            document.getElementById('spd-start').style.display  = 'none';
+            document.getElementById('spd-game').style.display   = '';
             document.getElementById('spd-result').style.display = 'none';
             showSpdQ();
             S.spdTimer = setInterval(() => {
                 S.spdSec--;
                 const el = document.getElementById('spd-timer');
                 el.textContent = S.spdSec;
-                el.className = 'speed-timer' + (S.spdSec <= 10 ? ' danger' : S.spdSec <= 20 ? ' warn' : '');
+                el.className   = 'speed-timer' + (S.spdSec <= 10 ? ' danger' : S.spdSec <= 20 ? ' warn' : '');
                 if (S.spdSec <= 0) {
                     clearInterval(S.spdTimer);
                     const prev = ld(`ov_spd_best_${currentLang}`, 0), nb = Math.max(prev, S.spdScore);
                     sv(`ov_spd_best_${currentLang}`, nb);
                     sv(`ov_spd_games_${currentLang}`, ld(`ov_spd_games_${currentLang}`, 0) + 1);
-                    sv(`ov_spd_tc_${currentLang}`, ld(`ov_spd_tc_${currentLang}`, 0) + S.spdCor);
-                    sv(`ov_spd_tq_${currentLang}`, ld(`ov_spd_tq_${currentLang}`, 0) + S.spdCor + S.spdWr);
-                    document.getElementById('spd-game').style.display = 'none';
+                    sv(`ov_spd_tc_${currentLang}`,   ld(`ov_spd_tc_${currentLang}`, 0) + S.spdCor);
+                    sv(`ov_spd_tq_${currentLang}`,   ld(`ov_spd_tq_${currentLang}`, 0) + S.spdCor + S.spdWr);
+                    document.getElementById('spd-game').style.display   = 'none';
                     document.getElementById('spd-result').style.display = '';
-                    document.getElementById('res-score').textContent = S.spdScore;
-                    document.getElementById('res-best').textContent = nb;
-                    document.getElementById('res-cor').textContent = S.spdCor;
-                    document.getElementById('res-wr').textContent = S.spdWr;
+                    document.getElementById('res-score').textContent    = S.spdScore;
+                    document.getElementById('res-best').textContent     = nb;
+                    document.getElementById('res-cor').textContent      = S.spdCor;
+                    document.getElementById('res-wr').textContent       = S.spdWr;
                 }
             }, 1000);
         }
         function showSpdQ() {
             const pool = S.spdPool;
-            const w = pool[S.spdIdx % pool.length];
+            const w    = pool[S.spdIdx % pool.length];
             document.getElementById('spd-word').textContent = w.w;
-            document.getElementById('spd-cur').textContent = S.spdScore;
+            document.getElementById('spd-cur').textContent  = S.spdScore;
             const opts = [w, ...WORDS[S.level].filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)]
                 .sort(() => Math.random() - 0.5);
             const el = document.getElementById('spd-opts'); el.innerHTML = '';
             opts.forEach(o => {
                 const b = document.createElement('button');
-                b.className = 'speed-opt'; b.textContent = o.m_th || o.m;
+                b.className  = 'speed-opt'; b.textContent = o.m_th || o.m;
                 b.onclick = () => {
                     const ok = o.w === w.w;
                     b.classList.add(ok ? 'correct' : 'wrong');
@@ -2059,7 +2134,7 @@
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return alert('เบราว์เซอร์ไม่รองรับระบบแยกเสียง กรุณาใช้ Chrome หรือ Safari');
             const rec = new SpeechRecognition();
-            if (currentLang === 'zh') rec.lang = 'zh-CN';
+            if (currentLang === 'zh')      rec.lang = 'zh-CN';
             else if (currentLang === 'jp') rec.lang = 'ja-JP';
             else rec.lang = 'en-US';
             rec.maxAlternatives = 5;
@@ -2088,7 +2163,7 @@
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
             const rec = new SpeechRecognition();
-            rec.lang = 'th-TH';
+            rec.lang  = 'th-TH';
             document.getElementById('search-status-lbl').innerText = '🎙️ กำลังรับฟังเสียงภาษาไทยของคุณ...';
             rec.start();
             rec.onresult = (e) => {
@@ -2146,10 +2221,9 @@
                 return;
             }
             const uniq = [...new Map(S.hardList.map(w => [w.w, w])).values()];
+            const readingField = (READING_FIELD && READING_FIELD[currentLang]) || 'ph';
             el.innerHTML = uniq.map(w => {
-                let rd = w.ph || '';
-                if (currentLang === 'zh') rd = w.pinyin || '';
-                else if (currentLang === 'jp') rd = w.kana || '';
+                const rd = w[readingField] || '';
                 return `<div class="review-item">
                     <div><div class="ri-word">${w.w}</div><div class="ri-ph">${rd} · ${w.pos || 'vocab'}</div></div>
                     <div style="display:flex;align-items:center;gap:10px">
@@ -2162,9 +2236,9 @@
 
         // ── Progress Tab ─────────────────────────────────────────────────────
         function renderProgress() {
-            const days = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'];
+            const days  = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'];
             const today = new Date();
-            const bars = []; let mx = 0;
+            const bars  = []; let mx = 0;
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(today); d.setDate(d.getDate() - i);
                 const k = d.toISOString().slice(0, 10);
@@ -2181,7 +2255,7 @@
                         <div class="bar-label">${b.l}</div>
                     </div>`;
             });
-            document.getElementById('tot-words').textContent = Object.keys(srsData).length;
+            document.getElementById('tot-words').textContent  = Object.keys(srsData).length;
             document.getElementById('tot-streak').textContent = streak;
             const avg = allScores.length
                 ? Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length) + '%'
@@ -2225,7 +2299,7 @@
             }
         }
         function saveSettings() {
-            ttsAccent = document.getElementById('tts-accent').value;
+            ttsAccent  = document.getElementById('tts-accent').value;
             sv('ov_tts', ttsAccent);
             notifTimes = [1, 2, 3, 4].map(i => document.getElementById('nt-' + i).value);
             sv('ov_notif_times', notifTimes);
@@ -2263,7 +2337,7 @@
             };
             customWords.push(entry); WORDS.MY = [...customWords];
             sv(`ov_custom_${currentLang}`, customWords);
-            ['inp-word', 'inp-ph', 'inp-pos', 'inp-mean', 'inp-ex'].forEach(id => document.getElementById(id).value = '');
+            ['inp-word','inp-ph','inp-pos','inp-mean','inp-ex'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('chip-my').style.display = '';
             renderCustomList();
         }
@@ -2294,107 +2368,162 @@
         function resetAll() {
             if (!confirm('ต้องการล้างสถิติและคลังข้อมูลของทุกภาษาในเครื่องจริง ๆ ใช่ไหม?')) return;
             ['en', 'zh', 'jp'].forEach(lang => {
-                [`ov_streak_${lang}`, `ov_daily_${lang}`, `ov_srs_${lang}`,
-                `ov_spd_best_${lang}`, `ov_spd_games_${lang}`, `ov_spd_tc_${lang}`,
-                `ov_spd_tq_${lang}`, `ov_scores_${lang}`, `ov_custom_${lang}`,
-                `ov_last_level_${lang}`].forEach(k => { try { localStorage.removeItem(k); } catch (e) { } });
+                [`ov_streak_${lang}`,`ov_daily_${lang}`,`ov_srs_${lang}`,
+                 `ov_spd_best_${lang}`,`ov_spd_games_${lang}`,`ov_spd_tc_${lang}`,
+                 `ov_spd_tq_${lang}`,`ov_scores_${lang}`,`ov_custom_${lang}`,
+                 `ov_last_level_${lang}`].forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
             });
-            ['ov_notif', 'ov_notif_times', 'ov_tts', 'ov_lang_env'].forEach(k => localStorage.removeItem(k));
+            ['ov_notif','ov_notif_times','ov_tts','ov_lang_env'].forEach(k => localStorage.removeItem(k));
             location.reload();
         }
 
         // ════════════════════════════════════════════════════════════════
-        // ✅ v3.52: STROKE ORDER MODULE (Hanzi Writer)
+        // ✅ v3.53: STROKE ORDER MODULE — multi-char nav + quiz mode
         // ════════════════════════════════════════════════════════════════
-        let strokeWriter = null;
+        let strokeWriter      = null;
         let hanziWriterLoaded = false;
+        let strokeChars       = [];   // Kanji/Hanzi ทุกตัวในคำปัจจุบัน
+        let strokeCharIndex   = 0;    // ตัวที่กำลังแสดงอยู่
 
-        /** ตรวจว่าอักษรนี้อยู่ใน CJK range (Kanji / Hanzi) หรือไม่ */
         function isKanjiOrHanzi(c) {
             return /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/.test(c);
         }
 
-        /** แสดง/ซ่อนปุ่ม stroke ตามภาษาและตัวอักษรปัจจุบัน */
         function updateStrokeBtn() {
             const btn = document.getElementById('stroke-btn');
             if (!btn) return;
             if (S.idx >= S.pool.length) { btn.style.display = 'none'; return; }
-            const w = S.pool[S.idx];
-            const show = (currentLang === 'zh' || currentLang === 'jp')
-                && w && [...w.w].some(isKanjiOrHanzi);
+            const w    = S.pool[S.idx];
+            const show = STROKE_LANGS.includes(currentLang) && w && [...w.w].some(isKanjiOrHanzi);
             btn.style.display = show ? '' : 'none';
         }
 
-        /** เปิด modal แสดงแอนิเมชันลำดับเส้น */
-        async function showStrokeOrder() {
-            const w = S.pool[S.idx];
-            if (!w) return;
-            const char = [...w.w].find(isKanjiOrHanzi);
-            if (!char) return;
-
-            // Lazy-load Hanzi Writer (ครั้งแรกเท่านั้น)
-            if (!hanziWriterLoaded) {
-                try {
-                    await new Promise((resolve, reject) => {
-                        const s = document.createElement('script');
-                        s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js';
-                        s.onload = resolve;
-                        s.onerror = reject;
-                        document.head.appendChild(s);
-                    });
-                    hanziWriterLoaded = true;
-                } catch (e) {
-                    alert('โหลด Hanzi Writer ไม่ได้ — กรุณาตรวจสอบอินเทอร์เน็ต');
-                    return;
-                }
+        /** อัปเดต UI ของ nav ← → */
+        function updateStrokeNavUI() {
+            const nav  = document.getElementById('stroke-nav');
+            const solo = document.getElementById('stroke-char-solo');
+            if (strokeChars.length > 1) {
+                nav.style.display  = 'flex';
+                solo.style.display = 'none';
+                document.getElementById('stroke-char-display').textContent  = strokeChars[strokeCharIndex];
+                document.getElementById('stroke-nav-indicator').textContent =
+                    `${strokeCharIndex + 1} / ${strokeChars.length}`;
+                document.getElementById('stroke-prev').disabled = strokeCharIndex === 0;
+                document.getElementById('stroke-next').disabled = strokeCharIndex === strokeChars.length - 1;
+            } else {
+                nav.style.display  = 'none';
+                solo.style.display = 'block';
+                solo.textContent   = strokeChars[0] || '';
             }
+        }
 
-            // เตรียม modal
-            const modal = document.getElementById('stroke-modal');
+        /** Render ตัวอักษรปัจจุบันใน HanziWriter */
+        function renderStrokeChar() {
+            const char   = strokeChars[strokeCharIndex];
             const target = document.getElementById('stroke-target');
-            document.getElementById('stroke-char-label').textContent =
-                `✍️  ${w.w}  ·  ${w.m_th || w.m}`;
             target.innerHTML = '';
-            modal.style.display = 'flex';
+            document.getElementById('stroke-quiz-result').style.display = 'none';
+            updateStrokeNavUI();
 
-            // ปรับสีตามธีม
+            if (strokeWriter) { try { strokeWriter.cancelAnimation(); } catch(e){} }
+
             const isDark = !document.body.classList.contains('light-theme');
-            const strokeCol = isDark ? '#F1F5F9' : '#1E293B';
-            const outlineCol = isDark ? '#334155' : '#DFD9CE';
-
             strokeWriter = HanziWriter.create(target, char, {
-                width: 220,
-                height: 220,
-                padding: 12,
-                strokeColor: strokeCol,
-                outlineColor: outlineCol,
+                width:                200,
+                height:               200,
+                padding:              10,
+                strokeColor:          isDark ? '#F1F5F9' : '#1E293B',
+                outlineColor:         isDark ? '#334155' : '#DFD9CE',
                 strokeAnimationSpeed: 1,
-                delayBetweenStrokes: 300,
-                showOutline: true,
-                onLoadCharDataError: () => {
-                    target.innerHTML = `
-                        <p style="color:var(--red);padding:20px;font-size:14px;line-height:1.8;">
-                            ❌ ไม่พบข้อมูลอักษรนี้<br>
-                            <span style="color:var(--text3);font-size:12px;">
-                                Hiragana / Katakana ไม่มีใน Hanzi Writer DB
-                            </span>
-                        </p>`;
+                delayBetweenStrokes:  300,
+                showOutline:          true,
+                onLoadCharDataError:  () => {
+                    target.innerHTML = `<p style="color:var(--red);padding:20px;font-size:14px;line-height:1.8;">
+                        ❌ ไม่พบข้อมูลอักษรนี้<br>
+                        <span style="color:var(--text3);font-size:12px;">Hiragana / Katakana ไม่มีใน DB</span></p>`;
                 }
             });
             strokeWriter.animateCharacter();
         }
 
+        /** สลับไปตัวอักษรถัดไปหรือก่อนหน้า */
+        function navigateStrokeChar(dir) {
+            const next = strokeCharIndex + dir;
+            if (next < 0 || next >= strokeChars.length) return;
+            strokeCharIndex = next;
+            renderStrokeChar();
+        }
+
+        /** เปิด modal แสดงลำดับเส้น */
+        async function showStrokeOrder() {
+            const w = S.pool[S.idx];
+            if (!w) return;
+            strokeChars = [...w.w].filter(isKanjiOrHanzi);
+            if (!strokeChars.length) return;
+            strokeCharIndex = 0;
+
+            if (!hanziWriterLoaded) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src     = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js';
+                        s.onload  = resolve;
+                        s.onerror = reject;
+                        document.head.appendChild(s);
+                    });
+                    hanziWriterLoaded = true;
+                } catch(e) {
+                    alert('โหลด Hanzi Writer ไม่ได้ — กรุณาตรวจสอบอินเทอร์เน็ต');
+                    return;
+                }
+            }
+
+            document.getElementById('stroke-word-label').textContent =
+                `✍️  ${w.w}  ·  ${w.m_th || w.m}`;
+            document.getElementById('stroke-modal').style.display = 'flex';
+            renderStrokeChar();
+        }
+
+        /** เล่น animation อีกรอบ (ยังเป็นปุ่ม ▶️ เล่น) */
+        function replayStroke() {
+            document.getElementById('stroke-quiz-result').style.display = 'none';
+            if (strokeWriter) strokeWriter.animateCharacter();
+        }
+
+        /** เริ่ม quiz mode — วาดตาม (withOutline=true) หรือ วาดเอง (false) */
+        function startStrokeQuiz(withOutline) {
+            if (!strokeWriter) return;
+            document.getElementById('stroke-quiz-result').style.display = 'none';
+            const isDark = !document.body.classList.contains('light-theme');
+            strokeWriter.quiz({
+                showOutline:    withOutline,
+                highlightColor: '#34D399',
+                strokeColor:    isDark ? '#38BDF8' : '#0284C7',
+                onComplete: (summary) => {
+                    const res      = document.getElementById('stroke-quiz-result');
+                    const mistakes = summary.totalMistakes || 0;
+                    if (mistakes === 0) {
+                        res.textContent  = '🎉 สมบูรณ์แบบ! ไม่มีผิดเลย';
+                        res.style.cssText = 'display:block;background:rgba(52,211,153,0.15);color:var(--green);padding:10px;border-radius:10px;font-size:14px;font-weight:700;';
+                    } else {
+                        res.textContent  = `✅ วาดครบแล้ว! ผิดทิศ ${mistakes} ครั้ง`;
+                        res.style.cssText = 'display:block;background:rgba(251,191,36,0.15);color:var(--amber);padding:10px;border-radius:10px;font-size:14px;font-weight:700;';
+                    }
+                }
+            });
+        }
+
         function closeStrokeModal() {
             document.getElementById('stroke-modal').style.display = 'none';
             if (strokeWriter) {
-                try { strokeWriter.cancelAnimation(); } catch (e) { }
+                try { strokeWriter.cancelAnimation(); } catch(e) {}
                 strokeWriter = null;
             }
         }
 
         /** Prefetch stroke data สำหรับทุกคำใน level นั้น (background, ไม่บล็อก UI) */
         async function prefetchStrokeData(level) {
-            if (currentLang !== 'zh' && currentLang !== 'jp') return;
+            if (!STROKE_LANGS.includes(currentLang)) return;
             if (!('caches' in window)) return;
             const words = WORDS[level] || [];
             if (!words.length) return;
@@ -2421,10 +2550,10 @@
             if (!('caches' in window)) { el.textContent = 'Browser ไม่รองรับ Cache API'; return; }
             try {
                 const cache = await caches.open(STROKE_CACHE);
-                const keys = await cache.keys();
+                const keys  = await cache.keys();
                 const count = keys.length;
-                const kb = count * 3; // ประมาณ 3 KB/อักษร
-                const size = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+                const kb    = count * 3; // ประมาณ 3 KB/อักษร
+                const size  = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
                 el.textContent = count === 0
                     ? 'ว่างเปล่า — ดูลำดับเส้นขณะออนไลน์เพื่อสะสม cache'
                     : `${count} อักษร · ประมาณ ${size}  (limit ${STROKE_LIMIT} อักษร)`;
@@ -2450,5 +2579,4 @@
         initApp();
     </script>
 </body>
-
 </html>

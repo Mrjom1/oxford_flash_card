@@ -106,7 +106,7 @@ VocabEcosystem/
 var APP_VERSION  = 'v3.52';   // ← แก้ตรงนี้
 var APP_CACHE    = 'oxford-vocab-' + APP_VERSION;
 var STROKE_CACHE = 'oxford-stroke-v1';
-var STROKE_LIMIT = 800;
+var STROKE_LIMIT = 500;
 ```
 
 > **หมายเหตุ:** ทุกครั้งที่เปลี่ยน `APP_VERSION`, SW จะ activate ทันทีและล้าง cache เวอร์ชันเก่าโดยอัตโนมัติ
@@ -118,7 +118,7 @@ var STROKE_LIMIT = 800;
 | Cache | ชื่อ | ขนาดสูงสุด | Strategy |
 |---|---|---|---|
 | App Shell + Vocab | `oxford-vocab-vX.XX` | ไม่จำกัด (vocab JSON ≈ 1–2 MB) | Cache-First |
-| Stroke Order Data | `oxford-stroke-v1` | 800 entries ≈ 2.4 MB | FIFO Cap |
+| Stroke Order Data | `oxford-stroke-v1` | 500 entries ≈ 1.5 MB | FIFO Cap |
 
 ผู้ใช้สามารถดูและล้าง Stroke Cache ได้จาก **⚙️ ตั้งค่า → จัดการพื้นที่ Cache**
 
@@ -167,6 +167,14 @@ python3 -m http.server 8080
 ---
 
 ## 📝 Changelog
+
+### v3.53 — UX Polish + Stroke Order Enhanced
+- ✅ **iOS Safari banner** — detect Safari iOS แล้วแสดงคำแนะนำ "Share → Add to Home Screen" แทน (beforeinstallprompt ไม่ทำงานบน iOS)
+- 🔢 **Level sorting ง่าย→ยาก** — `LEVEL_ORDER` ใน config.js กำหนดลำดับ A1→C2, HSK1→7, N5→N1 ทุกภาษา
+- ✍️ **Stroke Order — Multi-char navigation** — คำที่มีหลายตัวอักษร (เช่น 学習) เพิ่มปุ่ม ◀ ▶ สลับดูทีละตัว พร้อม indicator "1/2"
+- 🎮 **Stroke Order — Quiz Mode** — หลัง animation จบ กด "✍️ วาดตาม" (มี outline guide) หรือ "🧠 วาดเอง" (ไม่มี guide) ระบบให้ feedback ทันทีและนับ mistake
+- 🐛 **Bug fix: Card flip before new word** — แก้ปัญหาการ์ดแสดงคำแปลของคำถัดไปแว่บหนึ่งก่อนหมุน ตอนนี้การ์ดหมุนกลับก่อน (500ms) แล้วค่อย load คำใหม่
+- 🏗️ **READING_FIELD + STROKE_LANGS ใน config.js** — เตรียมรองรับภาษาเกาหลี (ko: romanization) และภาษาใหม่ในอนาคต
 
 ### v3.52 — Stroke Order + Version Management
 - ✨ เพิ่มฟีเจอร์ **Stroke Order** (ลำดับเส้น) สำหรับภาษาจีนและ Kanji ญี่ปุ่น  

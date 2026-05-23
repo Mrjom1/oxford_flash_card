@@ -1,14 +1,13 @@
 {
-    "version": "v3.52",
     "subtitle": "International Polyglot Vocabulary Edition by Shin@m0n Jom",
     "features": [
         {
             "icon": "🌐",
-            "text": "Multi-Language Ecosystem ท่องศัพท์ 3 ภาษาหลัก (อังกฤษ CEFR / จีน HSK 3.0 / ญี่ปุ่น JLPT)"
+            "text": "Multi-Language Ecosystem ท่องศัพท์ 3 ภาษาหลัก (อังกฤษ CEFR / จีน HSK 3.0 / ญี่ปุ่น JLPT) เรียงระดับง่าย→ยากอัตโนมัติ"
         },
         {
             "icon": "🃏",
-            "text": "Smart Flashcards บัตรคำพร้อมคำอ่านเฉพาะภาษา (Phonetics / Pinyin / Kana)"
+            "text": "Smart Flashcards บัตรคำพร้อมคำอ่านเฉพาะภาษา (Phonetics / Pinyin / Kana) พร้อมแอนิเมชันการ์ดลื่นไหล"
         },
         {
             "icon": "🎙️",
@@ -17,10 +16,6 @@
         {
             "icon": "🧠",
             "text": "Dynamic Spaced Repetition (SRS) อัลกอริทึมทบทวนอัจฉริยะ คัดกรองคำศัพท์ที่ลืมบ่อยขึ้นมาติวซ้ำ"
-        },
-        {
-            "icon": "✨",
-            "text": "Stroke Order (ลำดับเส้น) สำหรับภาษาจีนและ Kanji ญี่ปุ่น โดยใช้ Hanzi Writer"
         },
         {
             "icon": "⚡",
@@ -33,6 +28,10 @@
         {
             "icon": "🔍",
             "text": "Thai-to-Target Search ค้นหาศัพท์ย้อนกลับจากภาษาไทย รองรับทั้งการพิมพ์และการพูดใส่ไมโครโฟน"
+        },
+        {
+            "icon": "✍️",
+            "text": "Stroke Order ดูลำดับการลากเส้นพู่กันสำหรับจีนและ Kanji ญี่ปุ่น สลับดูหลายตัวอักษรได้ พร้อมโหมด วาดตาม / วาดเอง"
         },
         {
             "icon": "🔔",
