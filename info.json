@@ -1,14 +1,13 @@
 {
-    "version": "v3.51",
     "subtitle": "International Polyglot Vocabulary Edition by Shin@m0n Jom",
     "features": [
         {
             "icon": "🌐",
-            "text": "Multi-Language Ecosystem ท่องศัพท์ 3 ภาษาหลัก (อังกฤษ CEFR / จีน HSK 3.0 / ญี่ปุ่น JLPT)"
+            "text": "Multi-Language Ecosystem ท่องศัพท์ 3 ภาษาหลัก (อังกฤษ CEFR / จีน HSK 3.0 / ญี่ปุ่น JLPT) เรียงระดับง่าย→ยากอัตโนมัติ"
         },
         {
             "icon": "🃏",
-            "text": "Smart Flashcards บัตรคำพร้อมคำอ่านเฉพาะภาษา (Phonetics / Pinyin / Kana)"
+            "text": "Smart Flashcards บัตรคำพร้อมคำอ่านเฉพาะภาษา (Phonetics / Pinyin / Kana) พร้อมแอนิเมชันการ์ดลื่นไหล"
         },
         {
             "icon": "🎙️",
@@ -31,6 +30,10 @@
             "text": "Thai-to-Target Search ค้นหาศัพท์ย้อนกลับจากภาษาไทย รองรับทั้งการพิมพ์และการพูดใส่ไมโครโฟน"
         },
         {
+            "icon": "✍️",
+            "text": "Stroke Order ดูลำดับการลากเส้นพู่กันสำหรับจีนและ Kanji ญี่ปุ่น สลับดูหลายตัวอักษรได้ พร้อมโหมด วาดตาม / วาดเอง"
+        },
+        {
             "icon": "🔔",
             "text": "Smart Reminders ระบบตั้งเวลาแจ้งเตือนให้เข้าเรียนส่วนบุคคล ยืดหยุ่นสูงสุดถึง 4 ช่วงเวลา"
         }
@@ -38,10 +41,30 @@
     "donate": {
         "message": "If VocabEcosystem helped you learn, consider buying me a coffee ☕ or a small crypto donation — any amount appreciated!",
         "wallets": [
-            { "coin": "USDT", "network": "BEP-20 (BSC)", "address": "0x74AD7331CB8dA891406E0290BB90D51E2202d155" },
-            { "coin": "ETH",  "network": "ERC-20",       "address": "0x74AD7331CB8dA891406E0290BB90D51E2202d155" },
-            { "coin": "SOL",  "network": "Solana",        "address": "6o3odrTthz1PZSnXBMFPFuxvPRFDmiv3u5McLJ1ucAdR" },
-            { "coin": "DOGE", "network": "Dogecoin",      "address": "DEz1yFkKRBpe8mYksEN59VVDJyJizwRcmT" }
+            {
+                "coin": "USDT",
+                "icon": "💵",
+                "network": "BEP-20 (BSC)",
+                "address": "0x74AD7331CB8dA891406E0290BB90D51E2202d155"
+            },
+            {
+                "coin": "ETH",
+                "icon": "🔷",
+                "network": "ERC-20",
+                "address": "0x74AD7331CB8dA891406E0290BB90D51E2202d155"
+            },
+            {
+                "coin": "SOL",
+                "icon": "🟣",
+                "network": "Solana",
+                "address": "6o3odrTthz1PZSnXBMFPFuxvPRFDmiv3u5McLJ1ucAdR"
+            },
+            {
+                "coin": "DOGE",
+                "icon": "🐶",
+                "network": "Dogecoin",
+                "address": "DEz1yFkKRBpe8mYksEN59VVDJyJizwRcmT"
+            }
         ]
     }
 }
