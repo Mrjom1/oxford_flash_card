@@ -10,6 +10,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="VocabEcosystem">
     <link rel="manifest" href="manifest.json">
+    <!-- ✅ v3.54: PNG icons — Samsung Internet/launcher บางตัวไม่รับ SVG data URI + iOS อ่าน apple-touch-icon เท่านั้น -->
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
     <title>VocabEcosystem PWA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Kodchasan:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -1428,6 +1431,13 @@
                             <input type="time" class="time-input" style="width:100%" id="nt-3" onchange="saveSettings()">
                             <input type="time" class="time-input" style="width:100%" id="nt-4" onchange="saveSettings()">
                         </div>
+                        <!-- ✅ v3.54: แจ้งข้อจำกัด PWA ตรง ๆ -->
+                        <div class="setting-sub" style="margin-top:10px;">
+                            ⚠️ ข้อจำกัด PWA: การแจ้งเตือนทำงานเมื่อแอป/แท็บยังเปิดอยู่เท่านั้น
+                            หากระบบปิดแอปเบื้องหลัง (พบบ่อยใน Samsung / Xiaomi / Vivo)
+                            จะไม่มีการแจ้งเตือนจนกว่าจะเปิดแอปอีกครั้ง —
+                            แนะนำปิด Battery Optimization ให้เบราว์เซอร์ หรือเปิดแอปทิ้งไว้
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1902,18 +1912,59 @@
             sv(`ov_daily_${currentLang}`, dailyLog);
         }
 
+        // ── Toast (feedback แบบไม่บล็อก ใช้แทน alert สำหรับเรื่องไม่ critical) ──
+        function showToast(msg, ms = 4500) {
+            let t = document.getElementById('app-toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.id = 'app-toast';
+                t.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);'
+                    + 'background:rgba(15,23,42,.95);color:#F1F5F9;padding:10px 16px;border-radius:12px;'
+                    + 'font-size:13px;line-height:1.5;max-width:86vw;z-index:9999;text-align:center;'
+                    + 'box-shadow:0 4px 20px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);'
+                    + 'transition:opacity .3s;pointer-events:none;';
+                document.body.appendChild(t);
+            }
+            t.textContent = msg; t.style.opacity = '1';
+            clearTimeout(t._hid);
+            t._hid = setTimeout(() => { t.style.opacity = '0'; }, ms);
+        }
+
         // ── TTS ──────────────────────────────────────────────────────────────
+        // ✅ v3.54: แก้ "ไม่มีเสียง" บนเครื่องที่ไม่มี TTS engine (เช่น Vivo / ROM จีน)
+        //    - เดิม fail เงียบ → ตอนนี้ตรวจ voice ว่าง + onerror แล้วแจ้ง user ผ่าน toast
+        let ttsWarnedNoVoice = false, ttsWarnedError = false;
         function speak(word) {
-            if (!window.speechSynthesis) return;
+            if (!window.speechSynthesis) {
+                showToast('เบราว์เซอร์นี้ไม่รองรับเสียงอ่าน (Web Speech API)');
+                return;
+            }
             speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(word);
             if (currentLang === 'zh')      u.lang = 'zh-CN';
             else if (currentLang === 'jp') u.lang = 'ja-JP';
             else u.lang = ttsAccent === 'UK' ? 'en-GB' : 'en-US';
             u.rate = 0.85; u.pitch = 1;
-            const v = speechSynthesis.getVoices()
-                .find(v => v.lang === u.lang || v.lang.startsWith(u.lang.split('-')[0]));
+
+            const voices = speechSynthesis.getVoices();
+            if (voices.length === 0 && !ttsWarnedNoVoice) {
+                ttsWarnedNoVoice = true;
+                showToast('🔇 ไม่พบเสียงอ่านในเครื่อง — ติดตั้ง "Google Speech Services" จาก Play Store แล้วตั้งเป็น Text-to-Speech เริ่มต้นใน ตั้งค่าเครื่อง', 7000);
+                // ยัง speak() ต่อ เผื่อ engine โหลด voice แบบ lazy
+            }
+            // บาง Android คืน lang เป็น zh_CN (underscore) → normalize ก่อนเทียบ
+            const base = u.lang.split('-')[0];
+            const v = voices.find(v => {
+                const vl = (v.lang || '').replace('_', '-');
+                return vl === u.lang || vl.startsWith(base);
+            });
             if (v) u.voice = v;
+
+            u.onerror = (e) => {
+                if (ttsWarnedError) return;
+                ttsWarnedError = true;
+                showToast('⚠️ เล่นเสียงไม่สำเร็จ (' + (e.error || 'unknown') + ') — ตรวจสอบ TTS engine ของเครื่อง', 6000);
+            };
             speechSynthesis.speak(u);
         }
         function speakCur()  { const w = S.pool[S.idx]; if (w) speak(w.w); }
@@ -2328,7 +2379,27 @@
             sv('ov_notif_times', notifTimes);
             renderSettings(); scheduleNotif();
         }
+        // ✅ v3.54: ยิง notification ผ่าน Service Worker
+        //    Android (Chrome / Samsung Internet) ไม่รองรับ `new Notification()` — throw TypeError ทันที
+        //    ต้องใช้ registration.showNotification() เท่านั้น (desktop fallback ไป constructor ได้)
+        function fireNotification() {
+            const title = 'Oxford Vocab 📚';
+            const opts = {
+                body: 'ถึงเวลาท่องคำศัพท์แล้ว! 🎯',
+                icon: './icon-192.png',
+                badge: './icon-192.png',
+                tag: 'vocab-reminder'
+            };
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready
+                    .then(reg => reg.showNotification(title, opts))
+                    .catch(() => { try { new Notification(title, opts); } catch (e) { } });
+            } else {
+                try { new Notification(title, opts); } catch (e) { }
+            }
+        }
         function scheduleNotif() {
+            if (!('Notification' in window)) return;   // ✅ v3.54: กัน WebView ที่ไม่มี API
             if (!notifOn || Notification.permission !== 'granted') return;
             if (notifTimerId) clearTimeout(notifTimerId);
             const times = notifTimes.filter(t => t);
@@ -2342,7 +2413,7 @@
             });
             if (nextTime) {
                 notifTimerId = setTimeout(() => {
-                    new Notification('Oxford Vocab 📚', { body: 'ถึงเวลาท่องคำศัพท์แล้ว! 🎯' });
+                    fireNotification();
                     scheduleNotif();
                 }, nextTime - now);
             }
@@ -2600,6 +2671,14 @@
         }
 
         initApp();
+
+        // ✅ v3.54: เดิม scheduleNotif() ถูกเรียกจาก saveSettings() เท่านั้น
+        //    → ปิดแอปแล้วเปิดใหม่ timer หาย ไม่มีการแจ้งเตือนจนกว่าจะเข้า Settings อีกครั้ง
+        scheduleNotif();
+        // Re-schedule ตอนกลับมา foreground — มือถือ throttle/หยุด timer ตอนพับจอ
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) scheduleNotif();
+        });
     </script>
 </body>
 </html>

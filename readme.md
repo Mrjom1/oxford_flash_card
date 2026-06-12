@@ -4,7 +4,7 @@
 
 **International Polyglot Vocabulary Edition**
 
-[![Version](https://img.shields.io/badge/version-v3.53-38BDF8?style=flat-square)](https://github.com/)
+[![Version](https://img.shields.io/badge/version-v3.54-38BDF8?style=flat-square)](https://github.com/)
 [![License](https://img.shields.io/badge/license-MIT-34D399?style=flat-square)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-ready-818CF8?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 [![Client-Only](https://img.shields.io/badge/backend-none-FBBF24?style=flat-square)](#)
@@ -94,6 +94,10 @@ VocabEcosystem/
 ├── sw.js              ← Service Worker
 ├── manifest.json      ← PWA manifest
 ├── info.json          ← App metadata (subtitle, features, donate)
+├── icon-192.png       ← App icon (any)
+├── icon-512.png       ← App icon (any)
+├── icon-maskable-*.png← App icon (maskable, Android adaptive)
+├── apple-touch-icon.png ← iOS home screen icon
 ├── words_en.json      ← คลังศัพท์ Oxford CEFR (A1–C2)     ← ต้องมี
 ├── words_zh.json      ← คลังศัพท์ HSK 3.0 (HSK1–HSK7)    ← ต้องมี
 └── words_jp.json      ← คลังศัพท์ JLPT (N5–N1)           ← ต้องมี
@@ -177,7 +181,7 @@ VocabEcosystem/
 
 ```js
 // config.js
-var APP_VERSION  = 'v3.53';
+var APP_VERSION  = 'v3.54';
 var APP_CACHE    = 'oxford-vocab-' + APP_VERSION;
 var STROKE_CACHE = 'oxford-stroke-v1';
 var STROKE_LIMIT = 500;
@@ -219,6 +223,16 @@ Static files ล้วน — ไม่ต้องการ backend
 ---
 
 ## 📝 Changelog
+
+### v3.54 — Mobile Reliability Fixes
+- 🔔 **Fix: Notification ไม่ขึ้นบน Android (Samsung ฯลฯ)** — เปลี่ยนจาก `new Notification()` (Android throw TypeError) ไปใช้ `registration.showNotification()` ผ่าน Service Worker + เพิ่ม `notificationclick` handler ใน sw.js
+- 🔔 **Fix: timer แจ้งเตือนหายหลังปิดแอป** — เรียก `scheduleNotif()` ตอน boot และ re-schedule เมื่อกลับมา foreground (`visibilitychange`)
+- 🔔 **UI แจ้งข้อจำกัด PWA** — บอก user ตรง ๆ ว่าแจ้งเตือนทำงานเฉพาะตอนแอปเปิดอยู่ (ข้อจำกัดของเว็บ client-only ไม่มี push server)
+- 🔇 **Fix: ไม่มีเสียง TTS บนบางเครื่อง (Vivo / ROM จีน)** — เดิม fail เงียบ ตอนนี้ตรวจ `getVoices()` ว่าง + `utterance.onerror` แล้วแสดง toast แนะนำติดตั้ง Google Speech Services + normalize lang code `zh_CN` → `zh-CN`
+- 🛡️ **sw.js: เช็ค `res.ok` ก่อน cache** — กัน cache error response (404/500) ค้างถาวรใน cache-first
+- 🌐 **sw.js: Offline navigation fallback** — navigation request คืน `index.html` จาก cache (App Shell) แก้หน้าขาวตอน offline
+- 🖼️ **PNG icons จริง** — แทน SVG data URI (Samsung Internet/launcher บางตัวไม่รองรับ) + แยก `purpose: any / maskable` + เพิ่ม `apple-touch-icon` สำหรับ iOS
+- 🎨 ปรับ `background_color` / `theme_color` ใน manifest ให้ตรงกับ `theme-color` ใน index.html (`#0F172A`)
 
 ### v3.53 — UX Polish + Stroke Order Enhanced
 - ✅ **iOS Safari banner** — แสดงคำแนะนำ "Share → Add to Home Screen" แทน (beforeinstallprompt ไม่ทำงานบน iOS)
