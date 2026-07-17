@@ -4,7 +4,7 @@
 
 **International Polyglot Vocabulary Edition**
 
-[![Version](https://img.shields.io/badge/version-v3.54-38BDF8?style=flat-square)](https://github.com/)
+[![Version](https://img.shields.io/badge/version-v3.55-38BDF8?style=flat-square)](https://github.com/)
 [![License](https://img.shields.io/badge/license-MIT-34D399?style=flat-square)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-ready-818CF8?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 [![Client-Only](https://img.shields.io/badge/backend-none-FBBF24?style=flat-square)](#)
@@ -223,6 +223,13 @@ Static files ล้วน — ไม่ต้องการ backend
 ---
 
 ## 📝 Changelog
+
+### v3.55 — English Vocab Cleanup + Temporary EN-only
+- 🇬🇧 **คลังศัพท์อังกฤษปรับใหม่ทั้งชุด** — ล้างข้อมูล 5,313 คำ (A1–C1) ครบทุก field
+- 🧹 **Fix: level ขยะ `' '`** — ย้ายคำที่หลุด level (accounting → B2, angrily/feeding → B1, cleaning → A2) กลับเข้าที่ + ลบคำซ้ำ
+- ✍️ **เติมประโยคตัวอย่างที่ขาด 39 คำ** + เติมสัทอักษร `ph` ที่ว่าง (aged, beloved)
+- 🗑️ **ลบ level ว่าง** (C2, MY) และถอด field `is_fixed` ที่ค้างจากสคริปต์เจนคำศัพท์
+- 🚧 **ปิดจีน (HSK) และญี่ปุ่น (JLPT) ชั่วคราว** — ระหว่างปรับปรุงคลังศัพท์ให้สมบูรณ์ เหลือใช้งานเฉพาะอังกฤษ (config เก็บโครง zh/jp ไว้ครบ พร้อมเปิดคืน)
 
 ### v3.54 — Mobile Reliability Fixes
 - 🔔 **Fix: Notification ไม่ขึ้นบน Android (Samsung ฯลฯ)** — เปลี่ยนจาก `new Notification()` (Android throw TypeError) ไปใช้ `registration.showNotification()` ผ่าน Service Worker + เพิ่ม `notificationclick` handler ใน sw.js

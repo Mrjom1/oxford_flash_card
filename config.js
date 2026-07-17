@@ -6,7 +6,7 @@
  *     ใช้ var (ไม่ใช่ const/let) เพื่อให้ sw.js โหลดผ่าน importScripts() ได้
  */
 
-var APP_VERSION  = 'v3.54';
+var APP_VERSION  = 'v3.55';
 var APP_CACHE    = 'oxford-vocab-' + APP_VERSION;
 var STROKE_CACHE = 'oxford-stroke-v1';
 var STROKE_LIMIT = 500;

@@ -1385,8 +1385,9 @@
                         <!-- ✅ v3.52: ใช้ข้อความแทน Flag Emoji (ไม่แสดงบน Windows Desktop) -->
                         <select id="lang-select" class="lang-selector" onchange="switchLanguage(this.value)">
                             <option value="en">EN · English (CEFR)</option>
-                            <option value="zh">ZH · 中文 (HSK)</option>
-                            <option value="jp">JP · 日本語 (JLPT)</option>
+                            <!-- 🚧 v3.55: ปิดจีน/ญี่ปุ่นชั่วคราวระหว่างปรับปรุงคลังศัพท์ — เปิดคืนโดยลบ comment 2 บรรทัดนี้ + ปรับ ENABLED_LANGS ใน JS -->
+                            <!-- <option value="zh">ZH · 中文 (HSK)</option> -->
+                            <!-- <option value="jp">JP · 日本語 (JLPT)</option> -->
                         </select>
                     </div>
                     <div class="setting-row">
@@ -1611,7 +1612,10 @@
         document.title = 'VocabEcosystem PWA ' + APP_VERSION;
 
         let WORDS = {};
+        // 🚧 v3.55: ภาษาที่เปิดใช้งานชั่วคราว — เปิดคืน zh/jp โดยเพิ่มกลับในลิสต์นี้
+        var ENABLED_LANGS = ['en'];
         let currentLang = ld('ov_lang_env', 'en');
+        if (ENABLED_LANGS.indexOf(currentLang) === -1) { currentLang = 'en'; sv('ov_lang_env', 'en'); }
 
         let streak, dailyLog, srsData, allScores, customWords;
 
