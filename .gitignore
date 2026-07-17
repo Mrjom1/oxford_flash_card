@@ -1,0 +1,10 @@
+# --- Vocab generation intermediates (tools/) ---
+# เก็บเฉพาะสคริปต์ (*.py) — ไม่เอาไฟล์ JSON ระหว่างทาง
+# (ก้อนใหญ่ + เป็นไฟล์ resume ใช้ในเครื่อง ไม่ควรขึ้น repo ที่ deploy จริง)
+tools/*.json
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
