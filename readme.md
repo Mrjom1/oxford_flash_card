@@ -4,7 +4,7 @@
 
 **International Polyglot Vocabulary Edition**
 
-[![Version](https://img.shields.io/badge/version-v3.55-38BDF8?style=flat-square)](https://github.com/)
+[![Version](https://img.shields.io/badge/version-v3.56-38BDF8?style=flat-square)](https://github.com/)
 [![License](https://img.shields.io/badge/license-MIT-34D399?style=flat-square)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-ready-818CF8?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 [![Client-Only](https://img.shields.io/badge/backend-none-FBBF24?style=flat-square)](#)
@@ -223,6 +223,11 @@ Static files ล้วน — ไม่ต้องการ backend
 ---
 
 ## 📝 Changelog
+
+### v3.56 — Reverse Quiz Mode (ทายคำ)
+- 🔄 **โหมด Quiz ใหม่ "ทายคำ"** — โจทย์เป็นประโยคหรือความหมาย แล้วเลือก "คำ" ที่ใช่ (ตรงข้ามโหมด 4 ตัวเลือกเดิม) ฝึกอ่านจับใจความและแปลย้อนกลับ
+- 📖 **โจทย์ประโยคแบบ cloze** — ดึงประโยคตัวอย่างมาเจาะช่องคำเป้าหมายเป็น `_____` ให้เดาจากบริบท (~85% ของคำ) ถ้าไม่มีประโยคจะ fallback เป็นความหมายไทย
+- 🎲 ตัวเลือก 4 ปุ่ม (คำถูก + สุ่ม 3 คำจาก level เดียวกัน) พร้อมไฮไลต์คำตอบ อ่านออกเสียง และนับสถิติเหมือนโหมดเดิม
 
 ### v3.55 — English Vocab Cleanup + Temporary EN-only
 - 🇬🇧 **คลังศัพท์อังกฤษปรับใหม่ทั้งชุด** — ล้างข้อมูล 5,313 คำ (A1–C1) ครบทุก field

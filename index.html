@@ -600,6 +600,20 @@
             margin-bottom: 16px
         }
 
+        .rev-prompt {
+            font-size: 19px;
+            font-weight: 600;
+            line-height: 1.7;
+            color: var(--text);
+            margin: 6px 0 18px
+        }
+
+        .rev-blank {
+            color: var(--accent);
+            font-weight: 800;
+            letter-spacing: 1px
+        }
+
         .quiz-opts,
         .speed-opts {
             display: grid;
@@ -1227,6 +1241,7 @@
         <div id="tab-quiz" style="display:none">
             <div class="qmode-bar">
                 <button class="qmode-btn active" id="qm-mc" onclick="setQuizMode('mc')">4 ตัวเลือก</button>
+                <button class="qmode-btn" id="qm-rev" onclick="setQuizMode('rev')">🔄 ทายคำ</button>
                 <button class="qmode-btn" id="qm-fill" onclick="setQuizMode('fill')">เติมคำ</button>
                 <button class="qmode-btn" id="qm-speed" onclick="setQuizMode('speed')">⚡ Speed</button>
             </div>
@@ -1239,6 +1254,16 @@
                     <div class="quiz-opts" id="quiz-opts"></div>
                     <div class="quiz-result" id="quiz-result"></div>
                     <button class="next-btn" id="quiz-next" onclick="nextQuiz()">ถัดไป →</button>
+                </div>
+            </div>
+
+            <div id="rev-section" style="display:none">
+                <div class="quiz-card">
+                    <div class="quiz-q" id="rev-type">-</div>
+                    <div class="rev-prompt" id="rev-prompt">-</div>
+                    <div class="quiz-opts" id="rev-opts"></div>
+                    <div class="quiz-result" id="rev-result"></div>
+                    <button class="next-btn" id="rev-next" onclick="nextRev()">ถัดไป →</button>
                 </div>
             </div>
 
@@ -1642,6 +1667,7 @@
             ss: { done: 0, easy: 0, hard: 0, scores: [] }, hardList: [], chCount: 0,
             isRec: false, recObj: null,
             qPool: [], qIdx: 0, qAns: false,
+            rPool: [], rIdx: 0, rAns: false,
             fPool: [], fIdx: 0, fAns: false,
             spdTimer: null, spdSec: 0, spdScore: 0, spdCor: 0, spdWr: 0, spdPool: [], spdIdx: 0
         };
@@ -2043,13 +2069,14 @@
         // ── Quiz ─────────────────────────────────────────────────────────────
         function setQuizMode(mode) {
             S.quizMode = mode;
-            ['mc', 'fill', 'speed'].forEach(m => {
+            ['mc', 'rev', 'fill', 'speed'].forEach(m => {
                 document.getElementById(m + '-section').style.display = m === mode ? '' : 'none';
                 document.getElementById('qm-' + m).classList.toggle('active', m === mode);
             });
-            if (mode === 'mc')    initQuiz();
+            if (mode === 'mc')         initQuiz();
+            else if (mode === 'rev')   initRev();
             else if (mode === 'fill')  initFill();
-            else resetSpeed();
+            else                       resetSpeed();
         }
 
         function initQuiz() {
@@ -2097,6 +2124,72 @@
             S.qIdx++;
             if (S.qIdx >= S.qPool.length) { S.qPool.sort(() => Math.random() - 0.5); S.qIdx = 0; }
             showQuiz();
+        }
+
+        // ── Reverse Quiz (ความหมาย/ประโยค → คำ) ──────────────────────────────
+        // แทนที่คำเป้าหมายในประโยคด้วยช่องว่าง (whole-word, case-insensitive)
+        // คืน null ถ้าไม่พบคำในประโยค (จะได้ fallback ไปโหมดความหมายแทน)
+        function revCloze(sentence, word) {
+            const esc = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const re  = new RegExp('\\b' + esc + '\\b', 'i');
+            if (!re.test(sentence)) return null;
+            return sentence.replace(re, '<span class="rev-blank">_____</span>');
+        }
+        function initRev() {
+            if (!WORDS[S.level] || WORDS[S.level].length < 4) return;
+            S.rPool = [...WORDS[S.level]].sort(() => Math.random() - 0.5);
+            S.rIdx = 0; S.rAns = false; showRev();
+        }
+        function showRev() {
+            if (!S.rPool.length) return;
+            const w = S.rPool[S.rIdx % S.rPool.length];
+
+            // โจทย์หลัก: ประโยค cloze — สำรอง: ความหมายไทย
+            let clozed = null;
+            if (Array.isArray(w.ex)) {
+                for (const s of w.ex) { const c = revCloze(s, w.w); if (c) { clozed = c; break; } }
+            }
+            if (clozed) {
+                document.getElementById('rev-type').textContent   = '📖 เติมคำที่หายไปในประโยค';
+                document.getElementById('rev-prompt').innerHTML   = clozed;
+            } else {
+                document.getElementById('rev-type').textContent   = '🔄 ความหมายนี้คือคำใด?';
+                document.getElementById('rev-prompt').textContent = w.m_th || w.m_en || w.m || '';
+            }
+
+            // ตัวเลือก: คำถูก + สุ่ม 3 คำจาก level เดียวกัน
+            const all  = WORDS[S.level];
+            const opts = [w, ...all.filter(x => x.w !== w.w).sort(() => Math.random() - 0.5).slice(0, 3)]
+                .sort(() => Math.random() - 0.5);
+            const el = document.getElementById('rev-opts'); el.innerHTML = '';
+            opts.forEach(o => {
+                const b = document.createElement('button');
+                b.className = 'quiz-opt'; b.textContent = o.w;
+                b.onclick = () => answerRev(o.w === w.w, b, w); el.appendChild(b);
+            });
+            document.getElementById('rev-result').className = 'quiz-result';
+            document.getElementById('rev-next').className   = 'next-btn';
+            S.rAns = false;
+        }
+        function answerRev(ok, btn, w) {
+            if (S.rAns) return; S.rAns = true;
+            btn.classList.add(ok ? 'correct' : 'wrong');
+            if (!ok) {
+                document.querySelectorAll('#rev-opts .quiz-opt').forEach(b => {
+                    if (b.textContent === w.w) b.classList.add('correct');
+                });
+            }
+            const r = document.getElementById('rev-result');
+            r.textContent = ok ? '✅ ถูกต้อง! เก่งมากเลย' : '❌ ไม่ถูก — คำที่ใช่คือ "' + w.w + '"';
+            r.className = 'quiz-result show ' + (ok ? 'ok' : 'no');
+            document.getElementById('rev-next').className = 'next-btn show';
+            speak(w.w);
+            if (ok) logToday();
+        }
+        function nextRev() {
+            S.rIdx++;
+            if (S.rIdx >= S.rPool.length) { S.rPool.sort(() => Math.random() - 0.5); S.rIdx = 0; }
+            showRev();
         }
 
         // ── Fill in the blank ────────────────────────────────────────────────
