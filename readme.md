@@ -4,7 +4,7 @@
 
 **International Polyglot Vocabulary Edition**
 
-[![Version](https://img.shields.io/badge/version-v3.56-38BDF8?style=flat-square)](https://github.com/)
+[![Version](https://img.shields.io/badge/version-v3.57-38BDF8?style=flat-square)](https://github.com/)
 [![License](https://img.shields.io/badge/license-MIT-34D399?style=flat-square)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-ready-818CF8?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 [![Client-Only](https://img.shields.io/badge/backend-none-FBBF24?style=flat-square)](#)
@@ -223,6 +223,12 @@ Static files ล้วน — ไม่ต้องการ backend
 ---
 
 ## 📝 Changelog
+
+### v3.57 — Japanese Vocab Overhaul + Re-enable JP
+- 🇯🇵 **เปิดญี่ปุ่น (JLPT) คืน** — หลังปรับปรุงคลังศัพท์ครบ 7,972 คำ (จีน zh ยังปิดชั่วคราวระหว่างทำ HSK7)
+- 🔢 **Remap JLPT level ใหม่ทั้งหมด** — เดิม level สับสนหนัก (N4 มีแค่ 7 คำ) ปรับด้วย reference wordlist (community) match 97.5% → N5=720 · N4=608 · N3=1,786 · N2=1,822 · N1=3,036
+- 🧹 **ล้างคำเพี้ยน** — แก้ช่องคำที่มีสัญลักษณ์/โน้ตปน 323 คำ, คำแปล m_th ยาว/ปนภาษา 470 คำ, เติม kana ที่ขาด
+- 📖 ประโยคตัวอย่างครบทุกคำ
 
 ### v3.56 — Reverse Quiz Mode (ทายคำ)
 - 🔄 **โหมด Quiz ใหม่ "ทายคำ"** — โจทย์เป็นประโยคหรือความหมาย แล้วเลือก "คำ" ที่ใช่ (ตรงข้ามโหมด 4 ตัวเลือกเดิม) ฝึกอ่านจับใจความและแปลย้อนกลับ
